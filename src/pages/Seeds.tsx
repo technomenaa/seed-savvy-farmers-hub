@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
 import { Button } from '@/components/ui/button';
@@ -67,17 +66,17 @@ const Seeds = () => {
   const soilTypes = ['طينية - Clay', 'رملية - Sandy', 'طميية - Loamy', 'طينية رملية - Silty', 'مختلطة - Mixed'];
   const waterLevels = ['قليل - Low', 'متوسط - Medium', 'عالي - High'];
 
-  // Sample images for different seed types
+  // Sample images for different seed types with real plant images
   const getImageForSeedType = (type: string) => {
     const imageMap: { [key: string]: string } = {
-      'Cereals': 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=400&h=300&fit=crop',
-      'Vegetables': 'https://images.unsplash.com/photo-1590779033100-9f60a05a013d?w=400&h=300&fit=crop',
-      'Legumes': 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?w=400&h=300&fit=crop',
-      'Fruits': 'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=400&h=300&fit=crop',
-      'Herbs': 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400&h=300&fit=crop',
-      'Cash Crops': 'https://images.unsplash.com/photo-1472396961693-142e6e269027?w=400&h=300&fit=crop'
+      'Cereals': 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=400&h=300&fit=crop&crop=center',
+      'Vegetables': 'https://images.unsplash.com/photo-1590779033100-9f60a05a013d?w=400&h=300&fit=crop&crop=center',
+      'Legumes': 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?w=400&h=300&fit=crop&crop=center',
+      'Fruits': 'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=400&h=300&fit=crop&crop=center',
+      'Herbs': 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400&h=300&fit=crop&crop=center',
+      'Cash Crops': 'https://images.unsplash.com/photo-1472396961693-142e6e269027?w=400&h=300&fit=crop&crop=center'
     };
-    return imageMap[type] || 'https://images.unsplash.com/photo-1465379944081-7f47de8d74ac?w=400&h=300&fit=crop';
+    return imageMap[type] || 'https://images.unsplash.com/photo-1465379944081-7f47de8d74ac?w=400&h=300&fit=crop&crop=center';
   };
 
   // Load seeds from localStorage
@@ -86,7 +85,7 @@ const Seeds = () => {
     if (savedSeeds) {
       setSeeds(JSON.parse(savedSeeds));
     } else {
-      // Add sample data with images
+      // Add sample data with real plant images
       const sampleSeeds: Seed[] = [
         {
           id: '1',
@@ -104,7 +103,7 @@ const Seeds = () => {
           pricePerKg: '$12.50',
           availability: 'In Stock',
           addedDate: '2024-01-10',
-          imageUrl: getImageForSeedType('Cereals')
+          imageUrl: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=400&h=300&fit=crop&crop=center'
         },
         {
           id: '2',
@@ -122,7 +121,7 @@ const Seeds = () => {
           pricePerKg: '$8.75',
           availability: 'In Stock',
           addedDate: '2024-01-15',
-          imageUrl: getImageForSeedType('Cereals')
+          imageUrl: 'https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=400&h=300&fit=crop&crop=center'
         },
         {
           id: '3',
@@ -140,7 +139,97 @@ const Seeds = () => {
           pricePerKg: '$25.00',
           availability: 'Limited',
           addedDate: '2024-02-01',
-          imageUrl: getImageForSeedType('Vegetables')
+          imageUrl: 'https://images.unsplash.com/photo-1546470427-e26264be0b12?w=400&h=300&fit=crop&crop=center'
+        },
+        {
+          id: '4',
+          name: 'الخيار الأخضر - Green Cucumber',
+          variety: 'خيار منزلي - Home Garden',
+          type: 'Vegetables',
+          description: 'خيار منعش وطازج مثالي للسلطات والمخللات - Fresh and crisp cucumbers perfect for salads and pickling.',
+          plantingSeason: 'الربيع - Spring',
+          harvestTime: '60 يوم - 60 days',
+          yieldPotential: '10-15 طن/فدان - tons/acre',
+          waterRequirement: 'عالي - High',
+          soilType: 'طميية - Loamy',
+          region: 'البحر المتوسط - Mediterranean',
+          supplier: 'بذور الخضار الطازجة - Fresh Veggie Seeds',
+          pricePerKg: '$18.00',
+          availability: 'In Stock',
+          addedDate: '2024-02-05',
+          imageUrl: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&h=300&fit=crop&crop=center'
+        },
+        {
+          id: '5',
+          name: 'الفاصوليا البيضاء - White Beans',
+          variety: 'فاصوليا كلوية - Kidney Beans',
+          type: 'Legumes',
+          description: 'فاصوليا بيضاء غنية بالبروتين مثالية للطبخات التقليدية - Protein-rich white beans perfect for traditional cooking.',
+          plantingSeason: 'الربيع - Spring',
+          harvestTime: '90 يوم - 90 days',
+          yieldPotential: '12-18 بوشل/فدان - bushels/acre',
+          waterRequirement: 'متوسط - Medium',
+          soilType: 'طميية - Loamy',
+          region: 'الشرق الأوسط - Middle East',
+          supplier: 'بذور البقوليات المميزة - Premium Legume Seeds',
+          pricePerKg: '$22.00',
+          availability: 'In Stock',
+          addedDate: '2024-02-10',
+          imageUrl: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&h=300&fit=crop&crop=center'
+        },
+        {
+          id: '6',
+          name: 'النعناع العربي - Arabic Mint',
+          variety: 'نعناع بلدي - Local Mint',
+          type: 'Herbs',
+          description: 'نعناع عربي أصيل برائحة عطرة مثالي للشاي والطبخ - Authentic Arabic mint with aromatic fragrance perfect for tea and cooking.',
+          plantingSeason: 'طوال السنة - Year-round',
+          harvestTime: '45 يوم - 45 days',
+          yieldPotential: '5-8 طن/فدان - tons/acre',
+          waterRequirement: 'عالي - High',
+          soilType: 'طميية - Loamy',
+          region: 'بلاد الشام - Levant',
+          supplier: 'بذور الأعشاب الطبيعية - Natural Herbs Seeds',
+          pricePerKg: '$35.00',
+          availability: 'Limited',
+          addedDate: '2024-02-15',
+          imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop&crop=center'
+        },
+        {
+          id: '7',
+          name: 'القطن المصري - Egyptian Cotton',
+          variety: 'قطن طويل التيلة - Long Staple',
+          type: 'Cash Crops',
+          description: 'قطن مصري فاخر طويل التيلة معروف بجودته العالمية - Premium Egyptian long-staple cotton known for its world-class quality.',
+          plantingSeason: 'الربيع - Spring',
+          harvestTime: '180 يوم - 180 days',
+          yieldPotential: '800-1000 كيلو/فدان - kg/acre',
+          waterRequirement: 'عالي - High',
+          soilType: 'طينية - Clay',
+          region: 'دلتا النيل - Nile Delta',
+          supplier: 'شركة القطن المصري - Egyptian Cotton Co.',
+          pricePerKg: '$45.00',
+          availability: 'In Stock',
+          addedDate: '2024-02-20',
+          imageUrl: 'https://images.unsplash.com/photo-1503066211613-c17ebc9daef0?w=400&h=300&fit=crop&crop=center'
+        },
+        {
+          id: '8',
+          name: 'التفاح الأحمر - Red Apples',
+          variety: 'تفاح فوجي - Fuji Apples',
+          type: 'Fruits',
+          description: 'بذور تفاح أحمر حلو ومقرمش مثالي للمناطق المعتدلة - Sweet and crispy red apple seeds perfect for temperate regions.',
+          plantingSeason: 'الخريف - Fall',
+          harvestTime: '3-5 سنوات - 3-5 years',
+          yieldPotential: '20-30 طن/فدان - tons/acre',
+          waterRequirement: 'متوسط - Medium',
+          soilType: 'مختلطة - Mixed',
+          region: 'المناطق الجبلية - Mountain Regions',
+          supplier: 'مشاتل الفواكه الممتازة - Premium Fruit Nursery',
+          pricePerKg: '$120.00',
+          availability: 'Limited',
+          addedDate: '2024-02-25',
+          imageUrl: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=400&h=300&fit=crop&crop=center'
         }
       ];
       setSeeds(sampleSeeds);
@@ -496,8 +585,12 @@ const Seeds = () => {
                   onClick={() => setSelectedType(selectedType === type.value ? 'all' : type.value)}
                 >
                   <CardContent className="p-4 text-center">
-                    <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-gradient-to-br from-primary/20 to-primary/40 flex items-center justify-center">
-                      <Image className="h-8 w-8 text-primary" />
+                    <div className="w-16 h-16 mx-auto mb-3 rounded-full overflow-hidden">
+                      <img 
+                        src={getImageForSeedType(type.value)} 
+                        alt={type.label}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                     <h3 className="font-medium text-sm mb-1">{type.label}</h3>
                     <p className="text-xs text-gray-500">{count} عنصر - items</p>
