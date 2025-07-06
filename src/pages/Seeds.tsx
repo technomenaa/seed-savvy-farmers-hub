@@ -66,17 +66,17 @@ const Seeds = () => {
   const soilTypes = ['طينية - Clay', 'رملية - Sandy', 'طميية - Loamy', 'طينية رملية - Silty', 'مختلطة - Mixed'];
   const waterLevels = ['قليل - Low', 'متوسط - Medium', 'عالي - High'];
 
-  // Sample images for different seed types with real plant images
+  // صور ثابتة وموثوقة للبذور
   const getImageForSeedType = (type: string) => {
     const imageMap: { [key: string]: string } = {
-      'Cereals': 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=400&h=300&fit=crop&crop=center',
-      'Vegetables': 'https://images.unsplash.com/photo-1590779033100-9f60a05a013d?w=400&h=300&fit=crop&crop=center',
-      'Legumes': 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?w=400&h=300&fit=crop&crop=center',
-      'Fruits': 'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=400&h=300&fit=crop&crop=center',
-      'Herbs': 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400&h=300&fit=crop&crop=center',
-      'Cash Crops': 'https://images.unsplash.com/photo-1472396961693-142e6e269027?w=400&h=300&fit=crop&crop=center'
+      'Cereals': 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
+      'Vegetables': 'https://images.unsplash.com/photo-1590779033100-9f60a05a013d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
+      'Legumes': 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
+      'Fruits': 'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
+      'Herbs': 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
+      'Cash Crops': 'https://images.unsplash.com/photo-1472396961693-142e6e269027?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80'
     };
-    return imageMap[type] || 'https://images.unsplash.com/photo-1465379944081-7f47de8d74ac?w=400&h=300&fit=crop&crop=center';
+    return imageMap[type] || 'https://images.unsplash.com/photo-1465379944081-7f47de8d74ac?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80';
   };
 
   // Load seeds from localStorage
@@ -85,7 +85,7 @@ const Seeds = () => {
     if (savedSeeds) {
       setSeeds(JSON.parse(savedSeeds));
     } else {
-      // Add sample data with real plant images
+      // البيانات النموذجية مع صور محسّنة
       const sampleSeeds: Seed[] = [
         {
           id: '1',
@@ -103,7 +103,7 @@ const Seeds = () => {
           pricePerKg: '$12.50',
           availability: 'In Stock',
           addedDate: '2024-01-10',
-          imageUrl: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=400&h=300&fit=crop&crop=center'
+          imageUrl: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
         },
         {
           id: '2',
@@ -121,7 +121,7 @@ const Seeds = () => {
           pricePerKg: '$8.75',
           availability: 'In Stock',
           addedDate: '2024-01-15',
-          imageUrl: 'https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=400&h=300&fit=crop&crop=center'
+          imageUrl: 'https://images.unsplash.com/photo-1551754655-cd27e38d2076?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
         },
         {
           id: '3',
@@ -139,7 +139,7 @@ const Seeds = () => {
           pricePerKg: '$25.00',
           availability: 'Limited',
           addedDate: '2024-02-01',
-          imageUrl: 'https://images.unsplash.com/photo-1546470427-e26264be0b12?w=400&h=300&fit=crop&crop=center'
+          imageUrl: 'https://images.unsplash.com/photo-1546470427-e26264be0b12?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
         },
         {
           id: '4',
@@ -157,7 +157,7 @@ const Seeds = () => {
           pricePerKg: '$18.00',
           availability: 'In Stock',
           addedDate: '2024-02-05',
-          imageUrl: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&h=300&fit=crop&crop=center'
+          imageUrl: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
         },
         {
           id: '5',
@@ -175,7 +175,7 @@ const Seeds = () => {
           pricePerKg: '$22.00',
           availability: 'In Stock',
           addedDate: '2024-02-10',
-          imageUrl: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&h=300&fit=crop&crop=center'
+          imageUrl: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
         },
         {
           id: '6',
@@ -193,7 +193,7 @@ const Seeds = () => {
           pricePerKg: '$35.00',
           availability: 'Limited',
           addedDate: '2024-02-15',
-          imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop&crop=center'
+          imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
         },
         {
           id: '7',
@@ -211,7 +211,7 @@ const Seeds = () => {
           pricePerKg: '$45.00',
           availability: 'In Stock',
           addedDate: '2024-02-20',
-          imageUrl: 'https://images.unsplash.com/photo-1503066211613-c17ebc9daef0?w=400&h=300&fit=crop&crop=center'
+          imageUrl: 'https://images.unsplash.com/photo-1503066211613-c17ebc9daef0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
         },
         {
           id: '8',
@@ -229,7 +229,7 @@ const Seeds = () => {
           pricePerKg: '$120.00',
           availability: 'Limited',
           addedDate: '2024-02-25',
-          imageUrl: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=400&h=300&fit=crop&crop=center'
+          imageUrl: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
         }
       ];
       setSeeds(sampleSeeds);
@@ -585,11 +585,20 @@ const Seeds = () => {
                   onClick={() => setSelectedType(selectedType === type.value ? 'all' : type.value)}
                 >
                   <CardContent className="p-4 text-center">
-                    <div className="w-16 h-16 mx-auto mb-3 rounded-full overflow-hidden">
+                    <div className="w-16 h-16 mx-auto mb-3 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
                       <img 
                         src={getImageForSeedType(type.value)} 
                         alt={type.label}
                         className="w-full h-full object-cover"
+                        loading="lazy"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          const parent = target.parentElement;
+                          if (parent) {
+                            parent.innerHTML = `<div class="text-2xl">${type.value === 'Cereals' ? '🌾' : type.value === 'Vegetables' ? '🥕' : type.value === 'Legumes' ? '🫘' : type.value === 'Fruits' ? '🍎' : type.value === 'Herbs' ? '🌿' : '🌱'}</div>`;
+                          }
+                        }}
                       />
                     </div>
                     <h3 className="font-medium text-sm mb-1">{type.label}</h3>
@@ -605,13 +614,22 @@ const Seeds = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredSeeds.map((seed) => (
             <Card key={seed.id} className="hover:shadow-lg transition-shadow overflow-hidden">
-              <div className="h-48 w-full overflow-hidden">
+              <div className="h-48 w-full overflow-hidden bg-gray-100 flex items-center justify-center">
                 <img 
                   src={seed.imageUrl} 
                   alt={seed.name}
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                  loading="lazy"
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src = getImageForSeedType(seed.type);
+                    const target = e.target as HTMLImageElement;
+                    target.src = getImageForSeedType(seed.type);
+                    target.onerror = () => {
+                      target.style.display = 'none';
+                      const parent = target.parentElement;
+                      if (parent) {
+                        parent.innerHTML = `<div class="text-6xl text-gray-400">${seed.type === 'Cereals' ? '🌾' : seed.type === 'Vegetables' ? '🥕' : seed.type === 'Legumes' ? '🫘' : seed.type === 'Fruits' ? '🍎' : seed.type === 'Herbs' ? '🌿' : '🌱'}</div>`;
+                      }
+                    };
                   }}
                 />
               </div>
