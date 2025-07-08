@@ -1,14 +1,14 @@
 
 import { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { Search, Plus, MapPin, Phone, Mail, Leaf, Calendar, User } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Search, MapPin, Calendar, Leaf } from 'lucide-react';
+import AddSeedDialog from '@/components/AddSeedDialog';
+import SeedRequestDialog from '@/components/SeedRequestDialog';
 
 interface Seed {
   id: string;
@@ -25,11 +25,6 @@ interface Seed {
   description: string;
   image: string;
   inStock: boolean;
-  farmer?: {
-    name: string;
-    contact: string;
-    location: string;
-  };
 }
 
 const Seeds = () => {
@@ -38,7 +33,6 @@ const Seeds = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedSeed, setSelectedSeed] = useState<Seed | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-  const { toast } = useToast();
 
   const categories = [
     'Vegetables',
@@ -65,12 +59,7 @@ const Seeds = () => {
         temperature: '18-25°C',
         description: 'Roma tomatoes are determinate paste tomatoes, perfect for sauces and preserving. They have thick walls, few seeds, and excellent flavor.',
         image: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=300&h=200&fit=crop',
-        inStock: true,
-        farmer: {
-          name: 'Ahmed Hassan',
-          contact: '+20 123 456 789',
-          location: 'Cairo, Egypt'
-        }
+        inStock: true
       },
       {
         id: '2',
@@ -86,12 +75,7 @@ const Seeds = () => {
         temperature: '15-22°C',
         description: 'Hard red wheat is high in protein and gluten, making it ideal for bread making. It\'s drought-tolerant and adapts well to various climates.',
         image: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=300&h=200&fit=crop',
-        inStock: true,
-        farmer: {
-          name: 'Fatima Al-Zahra',
-          contact: '+20 987 654 321',
-          location: 'Alexandria, Egypt'
-        }
+        inStock: true
       },
       {
         id: '3',
@@ -107,12 +91,7 @@ const Seeds = () => {
         temperature: '20-30°C',
         description: 'Sweet basil is an aromatic herb perfect for culinary use. It\'s easy to grow and provides continuous harvest when properly maintained.',
         image: 'https://images.unsplash.com/photo-1618164435735-413d3b066c9a?w=300&h=200&fit=crop',
-        inStock: false,
-        farmer: {
-          name: 'Omar Mahmoud',
-          contact: '+20 555 123 456',
-          location: 'Giza, Egypt'
-        }
+        inStock: false
       },
       {
         id: '4',
@@ -128,12 +107,7 @@ const Seeds = () => {
         temperature: '18-25°C',
         description: 'Sunflowers are excellent for oil production and as ornamental plants. They attract beneficial insects and are relatively easy to grow.',
         image: 'https://images.unsplash.com/photo-1597848212624-e6e5d24ec4c2?w=300&h=200&fit=crop',
-        inStock: true,
-        farmer: {
-          name: 'Nadia Fouad',
-          contact: '+20 444 789 123',
-          location: 'Luxor, Egypt'
-        }
+        inStock: true
       }
     ];
     setSeeds(sampleSeeds);
@@ -151,6 +125,10 @@ const Seeds = () => {
     setIsDetailsOpen(true);
   };
 
+  const handleSeedAdded = (newSeed: Seed) => {
+    setSeeds(prevSeeds => [...prevSeeds, newSeed]);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -158,7 +136,7 @@ const Seeds = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Seed Database</h1>
-          <p className="text-gray-600">Explore our comprehensive collection of seeds with detailed information and farmer contacts</p>
+          <p className="text-gray-600">Explore our comprehensive collection of seeds with detailed information</p>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-4 mb-8">
@@ -184,10 +162,7 @@ const Seeds = () => {
             </SelectContent>
           </Select>
           
-          <Button className="flex items-center gap-2">
-            <Plus className="h-4 w-4" />
-            Add New Seed
-          </Button>
+          <AddSeedDialog onSeedAdded={handleSeedAdded} />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
@@ -228,12 +203,6 @@ const Seeds = () => {
                     <Calendar className="h-3 w-3" />
                     <span>Plant: {seed.plantingMonth}</span>
                   </div>
-                  {seed.farmer && (
-                    <div className="flex items-center gap-2">
-                      <User className="h-3 w-3" />
-                      <span>{seed.farmer.name}</span>
-                    </div>
-                  )}
                 </div>
               </CardContent>
             </Card>
@@ -308,28 +277,9 @@ const Seeds = () => {
                       </div>
                     </div>
                     
-                    {selectedSeed.farmer && (
-                      <div className="border-t pt-4">
-                        <h3 className="font-semibold text-lg mb-2">Farmer Information</h3>
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-2">
-                            <User className="h-4 w-4 text-gray-400" />
-                            <span className="font-medium">{selectedSeed.farmer.name}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <MapPin className="h-4 w-4 text-gray-400" />
-                            <span>{selectedSeed.farmer.location}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Phone className="h-4 w-4 text-gray-400" />
-                            <span>{selectedSeed.farmer.contact}</span>
-                          </div>
-                        </div>
-                        <Button className="mt-4 w-full">
-                          Contact Farmer
-                        </Button>
-                      </div>
-                    )}
+                    <div className="border-t pt-4">
+                      <SeedRequestDialog seedName={selectedSeed.name} />
+                    </div>
                   </div>
                 </div>
               </>

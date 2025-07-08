@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { UserPlus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import AuthDialog from './AuthDialog';
 
 interface ExpertRegistrationProps {
   onExpertAdded: (expert: any) => void;
@@ -15,6 +15,8 @@ interface ExpertRegistrationProps {
 
 const ExpertRegistration = ({ onExpertAdded }: ExpertRegistrationProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [newExpert, setNewExpert] = useState({
     name: '',
     expertise: '',
@@ -51,6 +53,20 @@ const ExpertRegistration = ({ onExpertAdded }: ExpertRegistrationProps) => {
     '10-15 years',
     '15+ years'
   ];
+
+  const handleRegisterClick = () => {
+    if (!isAuthenticated) {
+      setIsAuthOpen(true);
+    } else {
+      setIsOpen(true);
+    }
+  };
+
+  const handleAuthSuccess = () => {
+    setIsAuthenticated(true);
+    setIsAuthOpen(false);
+    setIsOpen(true);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -99,143 +115,151 @@ const ExpertRegistration = ({ onExpertAdded }: ExpertRegistrationProps) => {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button className="flex items-center gap-2">
-          <UserPlus className="h-4 w-4" />
-          Register as Expert
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Register New Agricultural Expert</DialogTitle>
-          <DialogDescription>
-            Enter detailed information about your expertise and specialization.
-          </DialogDescription>
-        </DialogHeader>
-        
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="name">Full Name *</Label>
-              <Input
-                id="name"
-                value={newExpert.name}
-                onChange={(e) => setNewExpert({...newExpert, name: e.target.value})}
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="expertise">Job Title *</Label>
-              <Input
-                id="expertise"
-                placeholder="e.g., Senior Agricultural Engineer"
-                value={newExpert.expertise}
-                onChange={(e) => setNewExpert({...newExpert, expertise: e.target.value})}
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="specialization">Specialization *</Label>
-              <Select value={newExpert.specialization} onValueChange={(value) => setNewExpert({...newExpert, specialization: value})}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select specialization" />
-                </SelectTrigger>
-                <SelectContent>
-                  {specializations.map(spec => (
-                    <SelectItem key={spec} value={spec}>{spec}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label htmlFor="experience">Years of Experience *</Label>
-              <Select value={newExpert.experience} onValueChange={(value) => setNewExpert({...newExpert, experience: value})}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select experience level" />
-                </SelectTrigger>
-                <SelectContent>
-                  {experienceLevels.map(exp => (
-                    <SelectItem key={exp} value={exp}>{exp}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label htmlFor="education">Education</Label>
-              <Input
-                id="education"
-                placeholder="e.g., B.Sc Agricultural Engineering"
-                value={newExpert.education}
-                onChange={(e) => setNewExpert({...newExpert, education: e.target.value})}
-              />
-            </div>
-            <div>
-              <Label htmlFor="location">Location</Label>
-              <Input
-                id="location"
-                placeholder="City, Country"
-                value={newExpert.location}
-                onChange={(e) => setNewExpert({...newExpert, location: e.target.value})}
-              />
-            </div>
-            <div>
-              <Label htmlFor="phone">Phone Number</Label>
-              <Input
-                id="phone"
-                value={newExpert.phone}
-                onChange={(e) => setNewExpert({...newExpert, phone: e.target.value})}
-              />
-            </div>
-            <div>
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={newExpert.email}
-                onChange={(e) => setNewExpert({...newExpert, email: e.target.value})}
-              />
-            </div>
-            <div>
-              <Label htmlFor="languages">Languages</Label>
-              <Input
-                id="languages"
-                placeholder="Arabic, English"
-                value={newExpert.languages}
-                onChange={(e) => setNewExpert({...newExpert, languages: e.target.value})}
-              />
-            </div>
-            <div>
-              <Label htmlFor="consultationFee">Consultation Fee</Label>
-              <Input
-                id="consultationFee"
-                placeholder="e.g., $50/hour"
-                value={newExpert.consultationFee}
-                onChange={(e) => setNewExpert({...newExpert, consultationFee: e.target.value})}
-              />
-            </div>
-          </div>
+    <>
+      <Button onClick={handleRegisterClick} className="flex items-center gap-2">
+        <UserPlus className="h-4 w-4" />
+        Register as Expert
+      </Button>
+
+      <AuthDialog
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        onSuccess={handleAuthSuccess}
+        title="Expert Registration - Authentication Required"
+      />
+
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Register New Agricultural Expert</DialogTitle>
+            <DialogDescription>
+              Enter detailed information about your expertise and specialization.
+            </DialogDescription>
+          </DialogHeader>
           
-          <div>
-            <Label htmlFor="bio">Bio</Label>
-            <Textarea
-              id="bio"
-              placeholder="Write about your experience and specialization..."
-              value={newExpert.bio}
-              onChange={(e) => setNewExpert({...newExpert, bio: e.target.value})}
-              rows={4}
-            />
-          </div>
-          
-          <div className="flex gap-4 pt-4">
-            <Button type="submit" className="flex-1">Register Expert</Button>
-            <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>
-              Cancel
-            </Button>
-          </div>
-        </form>
-      </DialogContent>
-    </Dialog>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="name">Full Name *</Label>
+                <Input
+                  id="name"
+                  value={newExpert.name}
+                  onChange={(e) => setNewExpert({...newExpert, name: e.target.value})}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="expertise">Job Title *</Label>
+                <Input
+                  id="expertise"
+                  placeholder="e.g., Senior Agricultural Engineer"
+                  value={newExpert.expertise}
+                  onChange={(e) => setNewExpert({...newExpert, expertise: e.target.value})}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="specialization">Specialization *</Label>
+                <Select value={newExpert.specialization} onValueChange={(value) => setNewExpert({...newExpert, specialization: value})}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select specialization" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {specializations.map(spec => (
+                      <SelectItem key={spec} value={spec}>{spec}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="experience">Years of Experience *</Label>
+                <Select value={newExpert.experience} onValueChange={(value) => setNewExpert({...newExpert, experience: value})}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select experience level" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {experienceLevels.map(exp => (
+                      <SelectItem key={exp} value={exp}>{exp}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="education">Education</Label>
+                <Input
+                  id="education"
+                  placeholder="e.g., B.Sc Agricultural Engineering"
+                  value={newExpert.education}
+                  onChange={(e) => setNewExpert({...newExpert, education: e.target.value})}
+                />
+              </div>
+              <div>
+                <Label htmlFor="location">Location</Label>
+                <Input
+                  id="location"
+                  placeholder="City, Country"
+                  value={newExpert.location}
+                  onChange={(e) => setNewExpert({...newExpert, location: e.target.value})}
+                />
+              </div>
+              <div>
+                <Label htmlFor="phone">Phone Number</Label>
+                <Input
+                  id="phone"
+                  value={newExpert.phone}
+                  onChange={(e) => setNewExpert({...newExpert, phone: e.target.value})}
+                />
+              </div>
+              <div>
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={newExpert.email}
+                  onChange={(e) => setNewExpert({...newExpert, email: e.target.value})}
+                />
+              </div>
+              <div>
+                <Label htmlFor="languages">Languages</Label>
+                <Input
+                  id="languages"
+                  placeholder="Arabic, English"
+                  value={newExpert.languages}
+                  onChange={(e) => setNewExpert({...newExpert, languages: e.target.value})}
+                />
+              </div>
+              <div>
+                <Label htmlFor="consultationFee">Consultation Fee</Label>
+                <Input
+                  id="consultationFee"
+                  placeholder="e.g., $50/hour"
+                  value={newExpert.consultationFee}
+                  onChange={(e) => setNewExpert({...newExpert, consultationFee: e.target.value})}
+                />
+              </div>
+            </div>
+            
+            <div>
+              <Label htmlFor="bio">Bio</Label>
+              <Textarea
+                id="bio"
+                placeholder="Write about your experience and specialization..."
+                value={newExpert.bio}
+                onChange={(e) => setNewExpert({...newExpert, bio: e.target.value})}
+                rows={4}
+              />
+            </div>
+            
+            <div className="flex gap-4 pt-4">
+              <Button type="submit" className="flex-1">Register Expert</Button>
+              <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>
+                Cancel
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
