@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { Database, Plus, Search, Calendar, TrendingUp, Image, Eye, Star, MapPin, Phone, Mail } from 'lucide-react';
+import { Database, Plus, Search, Calendar, TrendingUp, Eye } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface Seed {
@@ -37,6 +37,8 @@ const Seeds = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedSeed, setSelectedSeed] = useState<Seed | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [selectedCategorySeed, setSelectedCategorySeed] = useState<Seed | null>(null);
+  const [isCategoryDetailsOpen, setIsCategoryDetailsOpen] = useState(false);
   const [newSeed, setNewSeed] = useState({
     name: '',
     variety: '',
@@ -68,17 +70,16 @@ const Seeds = () => {
   const soilTypes = ['طينية - Clay', 'رملية - Sandy', 'طميية - Loamy', 'طينية رملية - Silty', 'مختلطة - Mixed'];
   const waterLevels = ['قليل - Low', 'متوسط - Medium', 'عالي - High'];
 
-  // Updated image URLs that work reliably
   const getImageForSeedType = (type: string) => {
     const imageMap: { [key: string]: string } = {
-      'Cereals': '/placeholder.svg?height=200&width=300&text=Cereals',
-      'Vegetables': '/placeholder.svg?height=200&width=300&text=Vegetables',
-      'Legumes': '/placeholder.svg?height=200&width=300&text=Legumes',
-      'Fruits': '/placeholder.svg?height=200&width=300&text=Fruits',
-      'Herbs': '/placeholder.svg?height=200&width=300&text=Herbs',
-      'Cash Crops': '/placeholder.svg?height=200&width=300&text=Cash+Crops'
+      'Cereals': 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=300&h=200&fit=crop',
+      'Vegetables': 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300&h=200&fit=crop',
+      'Legumes': 'https://images.unsplash.com/photo-1583846499908-de6ccbd0b06a?w=300&h=200&fit=crop',
+      'Fruits': 'https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=300&h=200&fit=crop',
+      'Herbs': 'https://images.unsplash.com/photo-1515586838455-8c6be1dc5da9?w=300&h=200&fit=crop',
+      'Cash Crops': 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=300&h=200&fit=crop'
     };
-    return imageMap[type] || '/placeholder.svg?height=200&width=300&text=Seeds';
+    return imageMap[type] || 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=300&h=200&fit=crop';
   };
 
   useEffect(() => {
@@ -214,6 +215,16 @@ const Seeds = () => {
       case 'Limited': return 'bg-yellow-100 text-yellow-800';
       case 'Out of Stock': return 'bg-red-100 text-red-800';
       default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const handleCategoryClick = (type: string) => {
+    const categorySeed = seeds.find(seed => seed.type === type);
+    if (categorySeed) {
+      setSelectedCategorySeed(categorySeed);
+      setIsCategoryDetailsOpen(true);
+    } else {
+      setSelectedType(selectedType === type ? 'all' : type);
     }
   };
 
@@ -488,7 +499,7 @@ const Seeds = () => {
                   className={`cursor-pointer hover:shadow-lg transition-all ${
                     selectedType === type.value ? 'ring-2 ring-primary bg-primary/5' : ''
                   }`}
-                  onClick={() => setSelectedType(selectedType === type.value ? 'all' : type.value)}
+                  onClick={() => handleCategoryClick(type.value)}
                 >
                   <CardContent className="p-4 text-center">
                     <div className="w-16 h-16 mx-auto mb-3 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
@@ -497,6 +508,10 @@ const Seeds = () => {
                         alt={type.label}
                         className="w-full h-full object-cover"
                         loading="lazy"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = 'https://via.placeholder.com/64x64/22c55e/ffffff?text=' + encodeURIComponent(type.value.charAt(0));
+                        }}
                       />
                     </div>
                     <h3 className="font-medium text-sm mb-1">{type.label}</h3>
@@ -508,7 +523,6 @@ const Seeds = () => {
           </div>
         </div>
 
-        {/* Seeds Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredSeeds.map((seed) => (
             <Card key={seed.id} className="hover:shadow-lg transition-shadow overflow-hidden">
@@ -518,6 +532,10 @@ const Seeds = () => {
                   alt={seed.name}
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                   loading="lazy"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = getImageForSeedType(seed.type);
+                  }}
                 />
               </div>
               <CardHeader className="pb-4">
@@ -573,7 +591,6 @@ const Seeds = () => {
           ))}
         </div>
 
-        {/* Seed Details Dialog */}
         <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             {selectedSeed && (

@@ -4,111 +4,55 @@ import { Header } from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Search, Plus, Star, MapPin, Phone, Mail, Calendar, Clock, User, Award, BookOpen } from 'lucide-react';
+import { Calendar, Star, MapPin, Phone, Mail, Users, Clock, Award, Search } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import ExpertRegistration from '@/components/ExpertRegistration';
 
 interface Expert {
   id: string;
   name: string;
-  title: string;
+  expertise: string;
   specialization: string;
   experience: string;
-  rating: number;
+  rating: string;
+  totalConsultations: number;
   location: string;
   phone: string;
   email: string;
-  description: string;
-  languages: string[];
-  certifications: string[];
-  availableHours: string;
+  bio: string;
+  languages: string;
   consultationFee: string;
-  avatarUrl: string;
-  totalConsultations: number;
-  addedDate: string;
-}
-
-interface Consultation {
-  id: string;
-  expertId: string;
-  farmerName: string;
-  farmerPhone: string;
-  farmerEmail: string;
-  preferredDate: string;
-  preferredTime: string;
-  topic: string;
-  message: string;
-  status: 'pending' | 'confirmed' | 'completed' | 'cancelled';
-  createdAt: string;
+  availability: 'Available' | 'Busy' | 'Offline';
+  avatar: string;
+  joinedDate: string;
+  education?: string;
 }
 
 const Experts = () => {
   const [experts, setExperts] = useState<Expert[]>([]);
-  const [consultations, setConsultations] = useState<Consultation[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSpecialization, setSelectedSpecialization] = useState<string>('all');
-  const [isAddExpertOpen, setIsAddExpertOpen] = useState(false);
-  const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [selectedExpert, setSelectedExpert] = useState<Expert | null>(null);
-  const [newExpert, setNewExpert] = useState({
-    name: '',
-    title: '',
-    specialization: '',
-    experience: '',
-    location: '',
-    phone: '',
-    email: '',
-    description: '',
-    languages: '',
-    certifications: '',
-    availableHours: '',
-    consultationFee: '',
-    avatarUrl: ''
-  });
-  const [newConsultation, setNewConsultation] = useState({
-    farmerName: '',
-    farmerPhone: '',
-    farmerEmail: '',
-    preferredDate: '',
-    preferredTime: '',
-    topic: '',
-    message: ''
-  });
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
   const { toast } = useToast();
 
   const specializations = [
-    'زراعة الحبوب - Grain Farming',
-    'زراعة الخضروات - Vegetable Farming',
-    'زراعة الفواكه - Fruit Farming',
+    'محاصيل الحبوب - Grain Crops',
+    'الخضروات - Vegetables', 
+    'الفواكه - Fruits',
+    'البقوليات - Legumes',
+    'المحاصيل النقدية - Cash Crops',
     'الزراعة العضوية - Organic Farming',
-    'إدارة المياه - Water Management',
-    'مكافحة الآفات - Pest Control',
-    'تربة وتغذية النبات - Soil & Plant Nutrition',
-    'الزراعة المحمية - Protected Agriculture',
-    'الثروة الحيوانية - Livestock',
-    'الإرشاد الزراعي - Agricultural Extension'
+    'إدارة الآفات - Pest Management',
+    'تربة وأسمدة - Soil & Fertilizers',
+    'الري والمياه - Irrigation & Water',
+    'التسويق الزراعي - Agricultural Marketing'
   ];
-
-  const getAvatarForSpecialization = (specialization: string) => {
-    const avatarMap: { [key: string]: string } = {
-      'زراعة الحبوب - Grain Farming': '/placeholder.svg?height=100&width=100&text=GF',
-      'زراعة الخضروات - Vegetable Farming': '/placeholder.svg?height=100&width=100&text=VF',
-      'زراعة الفواكه - Fruit Farming': '/placeholder.svg?height=100&width=100&text=FF',
-      'الزراعة العضوية - Organic Farming': '/placeholder.svg?height=100&width=100&text=OF',
-      'إدارة المياه - Water Management': '/placeholder.svg?height=100&width=100&text=WM',
-      'مكافحة الآفات - Pest Control': '/placeholder.svg?height=100&width=100&text=PC',
-      'تربة وتغذية النبات - Soil & Plant Nutrition': '/placeholder.svg?height=100&width=100&text=SN',
-      'الزراعة المحمية - Protected Agriculture': '/placeholder.svg?height=100&width=100&text=PA',
-      'الثروة الحيوانية - Livestock': '/placeholder.svg?height=100&width=100&text=LS',
-      'الإرشاد الزراعي - Agricultural Extension': '/placeholder.svg?height=100&width=100&text=AE'
-    };
-    return avatarMap[specialization] || '/placeholder.svg?height=100&width=100&text=EX';
-  };
 
   useEffect(() => {
     const savedExperts = localStorage.getItem('experts');
@@ -118,69 +62,64 @@ const Experts = () => {
       const sampleExperts: Expert[] = [
         {
           id: '1',
-          name: 'د. أحمد محمد الزراعي - Dr. Ahmed Mohamed',
-          title: 'خبير زراعة الحبوب - Grain Farming Expert',
-          specialization: 'زراعة الحبوب - Grain Farming',
-          experience: '15 سنة - 15 years',
-          rating: 4.8,
+          name: 'د. أحمد محمد علي - Dr. Ahmed Mohamed Ali',
+          expertise: 'مهندس زراعي أول - Senior Agricultural Engineer',
+          specialization: 'محاصيل الحبوب - Grain Crops',
+          experience: '10-15 سنة - 10-15 years',
+          rating: '4.8',
+          totalConsultations: 250,
           location: 'القاهرة، مصر - Cairo, Egypt',
           phone: '+20 123 456 7890',
-          email: 'ahmed.agricultural@example.com',
-          description: 'خبير في زراعة القمح والذرة والأرز مع تخصص في تحسين الإنتاجية وإدارة المحاصيل. حاصل على دكتوراه في العلوم الزراعية من جامعة القاهرة.',
-          languages: ['العربية', 'الإنجليزية'],
-          certifications: ['دكتوراه في العلوم الزراعية', 'خبير معتمد في إدارة المحاصيل'],
-          availableHours: 'الأحد - الخميس: 9:00 ص - 5:00 م',
-          consultationFee: '$50/ساعة',
-          avatarUrl: '/placeholder.svg?height=100&width=100&text=AM',
-          totalConsultations: 156,
-          addedDate: '2024-01-15'
+          email: 'ahmed.ali@email.com',
+          bio: 'خبير في زراعة محاصيل الحبوب مع خبرة واسعة في تحسين الإنتاجية وإدارة الأمراض النباتية. حاصل على دكتوراه في الهندسة الزراعية من جامعة القاهرة.',
+          languages: 'العربية، الإنجليزية - Arabic, English',
+          consultationFee: '$60/hour',
+          availability: 'Available',
+          avatar: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=150&h=150&fit=crop&crop=face',
+          joinedDate: '2023-01-15',
+          education: 'دكتوراه هندسة زراعية - PhD Agricultural Engineering'
         },
         {
           id: '2',
-          name: 'د. فاطمة علي الخضراوي - Dr. Fatima Ali',
-          title: 'خبيرة الزراعة العضوية - Organic Farming Expert',
+          name: 'د. فاطمة حسن - Dr. Fatima Hassan',
+          expertise: 'خبيرة زراعة عضوية - Organic Farming Specialist',
           specialization: 'الزراعة العضوية - Organic Farming',
-          experience: '12 سنة - 12 years',
-          rating: 4.9,
-          location: 'الرباط، المغرب - Rabat, Morocco',
-          phone: '+212 123 456 789',
-          email: 'fatima.organic@example.com',
-          description: 'متخصصة في الزراعة العضوية والمستدامة، مع خبرة واسعة في إنتاج الخضروات العضوية وإدارة التربة الطبيعية. حاصلة على شهادات دولية في الزراعة العضوية.',
-          languages: ['العربية', 'الفرنسية', 'الإنجليزية'],
-          certifications: ['شهادة خبير زراعة عضوية دولية', 'مستشار إدارة التربة المعتمد'],
-          availableHours: 'السبت - الأربعاء: 8:00 ص - 4:00 م',
-          consultationFee: '$45/ساعة',
-          avatarUrl: '/placeholder.svg?height=100&width=100&text=FA',
-          totalConsultations: 203,
-          addedDate: '2024-01-20'
+          experience: '5-10 سنوات - 5-10 years',
+          rating: '4.9',
+          totalConsultations: 180,
+          location: 'الإسكندرية، مصر - Alexandria, Egypt',
+          phone: '+20 987 654 3210',
+          email: 'fatima.hassan@email.com',
+          bio: 'متخصصة في الزراعة العضوية والاستدامة البيئية. تساعد المزارعين في التحول إلى الزراعة الصديقة للبيئة وتحسين جودة المحاصيل.',
+          languages: 'العربية، الإنجليزية، الفرنسية - Arabic, English, French',
+          consultationFee: '$45/hour',
+          availability: 'Available',
+          avatar: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&h=150&fit=crop&crop=face',
+          joinedDate: '2023-03-20',
+          education: 'ماجستير زراعة عضوية - MSc Organic Agriculture'
         },
         {
           id: '3',
-          name: 'م. خالد حسن المائي - Eng. Khalid Hassan',
-          title: 'خبير إدارة المياه - Water Management Expert',
-          specialization: 'إدارة المياه - Water Management',
-          experience: '10 سنوات - 10 years',
-          rating: 4.7,
-          location: 'الرياض، السعودية - Riyadh, Saudi Arabia',
-          phone: '+966 123 456 789',
-          email: 'khalid.water@example.com',
-          description: 'مهندس زراعي متخصص في أنظمة الري الحديثة وإدارة المياه الزراعية. خبرة في تصميم وتنفيذ أنظمة الري بالتنقيط والرش.',
-          languages: ['العربية', 'الإنجليزية'],
-          certifications: ['مهندس زراعي معتمد', 'خبير أنظمة الري الحديثة'],
-          availableHours: 'الأحد - الخميس: 10:00 ص - 6:00 م',
-          consultationFee: '$40/ساعة',
-          avatarUrl: '/placeholder.svg?height=100&width=100&text=KH',
-          totalConsultations: 128,
-          addedDate: '2024-02-01'
+          name: 'م. خالد الأحمد - Eng. Khaled Al-Ahmad',
+          expertise: 'خبير أنظمة الري - Irrigation Systems Expert',
+          specialization: 'الري والمياه - Irrigation & Water',
+          experience: '15+ سنة - 15+ years',
+          rating: '4.7',
+          totalConsultations: 320,
+          location: 'دمشق، سوريا - Damascus, Syria',
+          phone: '+963 123 456 789',
+          email: 'khaled.ahmad@email.com',
+          bio: 'خبير في تصميم وتنفيذ أنظمة الري الحديثة والري بالتنقيط. يساعد المزارعين في تحسين كفاءة استخدام المياه وزيادة الإنتاجية.',
+          languages: 'العربية، الإنجليزية - Arabic, English',
+          consultationFee: '$55/hour',
+          availability: 'Busy',
+          avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
+          joinedDate: '2022-11-10',
+          education: 'بكالوريوس هندسة مدنية - BSc Civil Engineering'
         }
       ];
       setExperts(sampleExperts);
       localStorage.setItem('experts', JSON.stringify(sampleExperts));
-    }
-
-    const savedConsultations = localStorage.getItem('consultations');
-    if (savedConsultations) {
-      setConsultations(JSON.parse(savedConsultations));
     }
   }, []);
 
@@ -190,115 +129,41 @@ const Experts = () => {
     }
   }, [experts]);
 
-  useEffect(() => {
-    if (consultations.length > 0) {
-      localStorage.setItem('consultations', JSON.stringify(consultations));
-    }
-  }, [consultations]);
-
-  const handleAddExpert = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!newExpert.name || !newExpert.specialization || !newExpert.experience) {
-      toast({
-        title: "خطأ - Error",
-        description: "يرجى ملء جميع الحقول المطلوبة - Please fill in all required fields.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    const expert: Expert = {
-      id: Date.now().toString(),
-      ...newExpert,
-      rating: 5.0,
-      languages: newExpert.languages.split(',').map(lang => lang.trim()),
-      certifications: newExpert.certifications.split(',').map(cert => cert.trim()),
-      avatarUrl: newExpert.avatarUrl || getAvatarForSpecialization(newExpert.specialization),
-      totalConsultations: 0,
-      addedDate: new Date().toISOString().split('T')[0]
-    };
-
-    setExperts(prev => [...prev, expert]);
-    setNewExpert({
-      name: '',
-      title: '',
-      specialization: '',
-      experience: '',
-      location: '',
-      phone: '',
-      email: '',
-      description: '',
-      languages: '',
-      certifications: '',
-      availableHours: '',
-      consultationFee: '',
-      avatarUrl: ''
+  const handleExpertAdded = (newExpert: Expert) => {
+    console.log('Expert added callback called with:', newExpert);
+    setExperts(prev => {
+      const updated = [...prev, newExpert];
+      console.log('Updated experts list:', updated);
+      return updated;
     });
-    setIsAddExpertOpen(false);
-    
     toast({
       title: "نجح - Success",
       description: "تم إضافة الخبير بنجاح! - Expert added successfully!",
     });
   };
 
-  const handleBookConsultation = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!newConsultation.farmerName || !newConsultation.farmerPhone || !newConsultation.preferredDate) {
-      toast({
-        title: "خطأ - Error",
-        description: "يرجى ملء جميع الحقول المطلوبة - Please fill in all required fields.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    const consultation: Consultation = {
-      id: Date.now().toString(),
-      expertId: selectedExpert!.id,
-      ...newConsultation,
-      status: 'pending',
-      createdAt: new Date().toISOString()
-    };
-
-    setConsultations(prev => [...prev, consultation]);
-    setNewConsultation({
-      farmerName: '',
-      farmerPhone: '',
-      farmerEmail: '',
-      preferredDate: '',
-      preferredTime: '',
-      topic: '',
-      message: ''
-    });
-    setIsBookingOpen(false);
-    setSelectedExpert(null);
-    
-    toast({
-      title: "تم الحجز - Booking Confirmed",
-      description: "تم حجز الاستشارة بنجاح! سيتم التواصل معك قريباً - Consultation booked successfully! We will contact you soon.",
-    });
-  };
-
   const filteredExperts = experts.filter(expert => {
     const matchesSearch = expert.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         expert.specialization.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         expert.location.toLowerCase().includes(searchTerm.toLowerCase());
+                         expert.expertise.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         expert.specialization.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesSpecialization = selectedSpecialization === 'all' || expert.specialization === selectedSpecialization;
     
     return matchesSearch && matchesSpecialization;
   });
 
-  const renderStars = (rating: number) => {
-    return Array.from({ length: 5 }, (_, i) => (
-      <Star
-        key={i}
-        className={`h-4 w-4 ${i < Math.floor(rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
-      />
-    ));
+  const getAvailabilityColor = (availability: string) => {
+    switch (availability) {
+      case 'Available': return 'bg-green-100 text-green-800';
+      case 'Busy': return 'bg-yellow-100 text-yellow-800';
+      case 'Offline': return 'bg-red-100 text-red-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const handleBookConsultation = (expert: Expert) => {
+    setSelectedExpert(expert);
+    setIsBookingOpen(true);
   };
 
   return (
@@ -308,15 +173,14 @@ const Experts = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">الخبراء الزراعيون - Agricultural Experts</h1>
-          <p className="text-gray-600">تواصل مع خبراء الزراعة واحجز استشاراتك المتخصصة - Connect with agricultural experts and book specialized consultations</p>
+          <p className="text-gray-600">تواصل مع خبراء زراعيين معتمدين واحجز استشارات متخصصة - Connect with certified agricultural experts and book specialized consultations</p>
         </div>
 
-        {/* Action Bar */}
         <div className="flex flex-col lg:flex-row gap-4 mb-8">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
-              placeholder="البحث عن خبراء بالاسم، التخصص، أو الموقع... - Search experts by name, specialization, or location..."
+              placeholder="البحث في الخبراء بالاسم أو التخصص... - Search experts by name or specialization..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -324,7 +188,7 @@ const Experts = () => {
           </div>
           
           <Select value={selectedSpecialization} onValueChange={setSelectedSpecialization}>
-            <SelectTrigger className="w-full lg:w-80">
+            <SelectTrigger className="w-full lg:w-64">
               <SelectValue placeholder="تصفية حسب التخصص - Filter by specialization" />
             </SelectTrigger>
             <SelectContent>
@@ -335,163 +199,14 @@ const Experts = () => {
             </SelectContent>
           </Select>
           
-          <Dialog open={isAddExpertOpen} onOpenChange={setIsAddExpertOpen}>
-            <DialogTrigger asChild>
-              <Button className="flex items-center gap-2">
-                <Plus className="h-4 w-4" />
-                إضافة خبير - Add Expert
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>إضافة خبير جديد - Add New Expert</DialogTitle>
-                <DialogDescription>
-                  أدخل معلومات الخبير الزراعي - Enter agricultural expert information.
-                </DialogDescription>
-              </DialogHeader>
-              
-              <form onSubmit={handleAddExpert} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="expertName">الاسم - Name *</Label>
-                    <Input
-                      id="expertName"
-                      value={newExpert.name}
-                      onChange={(e) => setNewExpert({...newExpert, name: e.target.value})}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="expertTitle">المسمى الوظيفي - Title</Label>
-                    <Input
-                      id="expertTitle"
-                      value={newExpert.title}
-                      onChange={(e) => setNewExpert({...newExpert, title: e.target.value})}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="expertSpecialization">التخصص - Specialization *</Label>
-                    <Select value={newExpert.specialization} onValueChange={(value) => setNewExpert({...newExpert, specialization: value})}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="اختر التخصص - Select specialization" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {specializations.map(spec => (
-                          <SelectItem key={spec} value={spec}>{spec}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label htmlFor="expertExperience">سنوات الخبرة - Years of Experience *</Label>
-                    <Input
-                      id="expertExperience"
-                      placeholder="مثل، 10 سنوات - e.g., 10 years"
-                      value={newExpert.experience}
-                      onChange={(e) => setNewExpert({...newExpert, experience: e.target.value})}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="expertLocation">الموقع - Location</Label>
-                    <Input
-                      id="expertLocation"
-                      value={newExpert.location}
-                      onChange={(e) => setNewExpert({...newExpert, location: e.target.value})}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="expertPhone">الهاتف - Phone</Label>
-                    <Input
-                      id="expertPhone"
-                      value={newExpert.phone}
-                      onChange={(e) => setNewExpert({...newExpert, phone: e.target.value})}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="expertEmail">البريد الإلكتروني - Email</Label>
-                    <Input
-                      id="expertEmail"
-                      type="email"
-                      value={newExpert.email}
-                      onChange={(e) => setNewExpert({...newExpert, email: e.target.value})}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="expertFee">رسوم الاستشارة - Consultation Fee</Label>
-                    <Input
-                      id="expertFee"
-                      placeholder="مثل، $50/ساعة - e.g., $50/hour"
-                      value={newExpert.consultationFee}
-                      onChange={(e) => setNewExpert({...newExpert, consultationFee: e.target.value})}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="expertLanguages">اللغات - Languages</Label>
-                    <Input
-                      id="expertLanguages"
-                      placeholder="العربية، الإنجليزية - Arabic, English"
-                      value={newExpert.languages}
-                      onChange={(e) => setNewExpert({...newExpert, languages: e.target.value})}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="expertCertifications">الشهادات - Certifications</Label>
-                    <Input
-                      id="expertCertifications"
-                      placeholder="افصل بفاصلة - Separate with comma"
-                      value={newExpert.certifications}
-                      onChange={(e) => setNewExpert({...newExpert, certifications: e.target.value})}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="expertHours">ساعات العمل - Available Hours</Label>
-                    <Input
-                      id="expertHours"
-                      placeholder="الأحد - الخميس: 9:00 ص - 5:00 م"
-                      value={newExpert.availableHours}
-                      onChange={(e) => setNewExpert({...newExpert, availableHours: e.target.value})}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="expertAvatar">رابط الصورة الشخصية - Avatar URL</Label>
-                    <Input
-                      id="expertAvatar"
-                      value={newExpert.avatarUrl}
-                      onChange={(e) => setNewExpert({...newExpert, avatarUrl: e.target.value})}
-                      placeholder="https://example.com/avatar.jpg"
-                    />
-                  </div>
-                </div>
-                
-                <div>
-                  <Label htmlFor="expertDescription">الوصف - Description</Label>
-                  <Textarea
-                    id="expertDescription"
-                    placeholder="وصف مفصل عن الخبير وخبراته... - Detailed description of the expert and their expertise..."
-                    value={newExpert.description}
-                    onChange={(e) => setNewExpert({...newExpert, description: e.target.value})}
-                    rows={4}
-                  />
-                </div>
-                
-                <div className="flex gap-4 pt-4">
-                  <Button type="submit" className="flex-1">إضافة الخبير - Add Expert</Button>
-                  <Button type="button" variant="outline" onClick={() => setIsAddExpertOpen(false)}>
-                    إلغاء - Cancel
-                  </Button>
-                </div>
-              </form>
-            </DialogContent>
-          </Dialog>
+          <ExpertRegistration onExpertAdded={handleExpertAdded} />
         </div>
 
-        {/* Statistics */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center">
-                <User className="h-8 w-8 text-primary" />
+                <Users className="h-8 w-8 text-primary" />
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">إجمالي الخبراء - Total Experts</p>
                   <p className="text-2xl font-bold">{experts.length}</p>
@@ -502,10 +217,12 @@ const Experts = () => {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center">
-                <Calendar className="h-8 w-8 text-green-600" />
+                <Clock className="h-8 w-8 text-green-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">الاستشارات المحجوزة - Booked Consultations</p>
-                  <p className="text-2xl font-bold text-green-600">{consultations.length}</p>
+                  <p className="text-sm font-medium text-gray-600">متاح - Available</p>
+                  <p className="text-2xl font-bold text-green-600">
+                    {experts.filter(e => e.availability === 'Available').length}
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -515,8 +232,10 @@ const Experts = () => {
               <div className="flex items-center">
                 <Award className="h-8 w-8 text-yellow-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">التخصصات المتاحة - Available Specializations</p>
-                  <p className="text-2xl font-bold text-yellow-600">{specializations.length}</p>
+                  <p className="text-sm font-medium text-gray-600">تقييم عالي - High Rating</p>
+                  <p className="text-2xl font-bold text-yellow-600">
+                    {experts.filter(e => parseFloat(e.rating) >= 4.5).length}
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -537,181 +256,222 @@ const Experts = () => {
         {/* Experts Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredExperts.map((expert) => (
-            <Card key={expert.id} className="hover:shadow-lg transition-shadow">
+            <Card key={expert.id} className="hover:shadow-lg transition-shadow overflow-hidden">
               <CardHeader className="pb-4">
-                <div className="flex items-center space-x-4">
-                  <Avatar className="h-16 w-16">
-                    <AvatarImage src={expert.avatarUrl} alt={expert.name} />
-                    <AvatarFallback>{expert.name.split(' ')[0]?.charAt(0) || 'E'}</AvatarFallback>
+                <div className="flex items-start gap-4">
+                  <Avatar className="w-16 h-16">
+                    <AvatarImage src={expert.avatar} alt={expert.name} />
+                    <AvatarFallback>{expert.name.charAt(0)}</AvatarFallback>
                   </Avatar>
                   <div className="flex-1">
                     <CardTitle className="text-lg">{expert.name}</CardTitle>
-                    <p className="text-sm text-gray-500">{expert.title}</p>
-                    <div className="flex items-center gap-1 mt-1">
-                      {renderStars(expert.rating)}
-                      <span className="text-sm text-gray-600 ml-1">({expert.rating})</span>
+                    <p className="text-sm text-gray-600">{expert.expertise}</p>
+                    <div className="flex items-center gap-2 mt-2">
+                      <div className="flex items-center">
+                        <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                        <span className="text-sm font-medium ml-1">{expert.rating}</span>
+                      </div>
+                      <Badge className={getAvailabilityColor(expert.availability)}>
+                        {expert.availability === 'Available' ? 'متاح' : 
+                         expert.availability === 'Busy' ? 'مشغول' : 'غير متاح'}
+                      </Badge>
                     </div>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-3">
                 <Badge variant="secondary" className="w-fit">
                   {expert.specialization}
                 </Badge>
                 
-                <p className="text-sm text-gray-600 line-clamp-3">{expert.description}</p>
-                
                 <div className="space-y-2 text-sm">
                   <div className="flex items-center gap-2">
-                    <Award className="h-4 w-4 text-gray-400" />
-                    <span>خبرة: {expert.experience}</span>
+                    <MapPin className="h-4 w-4 text-gray-400" />
+                    <span>{expert.location}</span>
                   </div>
-                  {expert.location && (
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4 text-gray-400" />
-                      <span>{expert.location}</span>
-                    </div>
-                  )}
-                  {expert.consultationFee && (
-                    <div className="text-primary font-semibold">
-                      رسوم الاستشارة: {expert.consultationFee}
-                    </div>
-                  )}
+                  <div className="flex items-center gap-2">
+                    <Calendar className="h-4 w-4 text-gray-400" />
+                    <span>{expert.experience}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Users className="h-4 w-4 text-gray-400" />
+                    <span>{expert.totalConsultations} استشارة - consultations</span>
+                  </div>
                 </div>
                 
-                <div className="flex items-center justify-between text-xs text-gray-500">
-                  <span>{expert.totalConsultations} استشارة</span>
-                  <span>انضم في {new Date(expert.addedDate).toLocaleDateString('ar')}</span>
-                </div>
+                {expert.consultationFee && (
+                  <p className="text-sm font-semibold text-primary">الرسوم: {expert.consultationFee}</p>
+                )}
                 
-                <Button 
-                  className="w-full"
-                  onClick={() => {
-                    setSelectedExpert(expert);
-                    setIsBookingOpen(true);
-                  }}
-                >
-                  <Calendar className="h-4 w-4 mr-2" />
-                  حجز استشارة - Book Consultation
-                </Button>
+                <div className="flex gap-2 pt-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="flex-1"
+                    onClick={() => {
+                      setSelectedExpert(expert);
+                      setIsDetailsOpen(true);
+                    }}
+                  >
+                    التفاصيل - Details
+                  </Button>
+                  <Button 
+                    size="sm"
+                    className="flex-1"
+                    disabled={expert.availability !== 'Available'}
+                    onClick={() => handleBookConsultation(expert)}
+                  >
+                    حجز استشارة - Book
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           ))}
         </div>
 
-        {/* Booking Dialog */}
-        <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
-          <DialogContent className="max-w-2xl">
+        {/* Expert Details Dialog */}
+        <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             {selectedExpert && (
               <>
                 <DialogHeader>
-                  <DialogTitle>حجز استشارة مع {selectedExpert.name}</DialogTitle>
+                  <DialogTitle className="text-2xl">{selectedExpert.name}</DialogTitle>
                   <DialogDescription>
-                    املأ النموذج لحجز استشارة مع الخبير - Fill the form to book a consultation with the expert
+                    {selectedExpert.expertise} - معلومات مفصلة عن الخبير
                   </DialogDescription>
                 </DialogHeader>
                 
-                <form onSubmit={handleBookConsultation} className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="farmerName">اسم المزارع - Farmer Name *</Label>
-                      <Input
-                        id="farmerName"
-                        value={newConsultation.farmerName}
-                        onChange={(e) => setNewConsultation({...newConsultation, farmerName: e.target.value})}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="farmerPhone">رقم الهاتف - Phone Number *</Label>
-                      <Input
-                        id="farmerPhone"
-                        value={newConsultation.farmerPhone}
-                        onChange={(e) => setNewConsultation({...newConsultation, farmerPhone: e.target.value})}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="farmerEmail">البريد الإلكتروني - Email</Label>
-                      <Input
-                        id="farmerEmail"
-                        type="email"
-                        value={newConsultation.farmerEmail}
-                        onChange={(e) => setNewConsultation({...newConsultation, farmerEmail: e.target.value})}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="preferredDate">التاريخ المفضل - Preferred Date *</Label>
-                      <Input
-                        id="preferredDate"
-                        type="date"
-                        value={newConsultation.preferredDate}
-                        onChange={(e) => setNewConsultation({...newConsultation, preferredDate: e.target.value})}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="preferredTime">الوقت المفضل - Preferred Time</Label>
-                      <Input
-                        id="preferredTime"
-                        type="time"
-                        value={newConsultation.preferredTime}
-                        onChange={(e) => setNewConsultation({...newConsultation, preferredTime: e.target.value})}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="topic">موضوع الاستشارة - Consultation Topic</Label>
-                      <Input
-                        id="topic"
-                        value={newConsultation.topic}
-                        onChange={(e) => setNewConsultation({...newConsultation, topic: e.target.value})}
-                        placeholder="مثل، مشاكل في المحصول - e.g., crop problems"
-                      />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-4">
+                      <Avatar className="w-24 h-24">
+                        <AvatarImage src={selectedExpert.avatar} alt={selectedExpert.name} />
+                        <AvatarFallback className="text-2xl">{selectedExpert.name.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="flex items-center">
+                            <Star className="h-5 w-5 text-yellow-500 fill-current" />
+                            <span className="font-bold ml-1">{selectedExpert.rating}</span>
+                          </div>
+                          <Badge className={getAvailabilityColor(selectedExpert.availability)}>
+                            {selectedExpert.availability === 'Available' ? 'متاح' : 
+                             selectedExpert.availability === 'Busy' ? 'مشغول' : 'غير متاح'}
+                          </Badge>
+                        </div>
+                        <p className="text-lg font-semibold">{selectedExpert.consultationFee}</p>
+                      </div>
                     </div>
                   </div>
                   
-                  <div>
-                    <Label htmlFor="message">رسالة إضافية - Additional Message</Label>
-                    <Textarea
-                      id="message"
-                      placeholder="اكتب تفاصيل إضافية عن استشارتك... - Write additional details about your consultation..."
-                      value={newConsultation.message}
-                      onChange={(e) => setNewConsultation({...newConsultation, message: e.target.value})}
-                      rows={3}
-                    />
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="font-semibold text-lg mb-2">النبذة الشخصية - Bio</h3>
+                      <p className="text-gray-600 leading-relaxed">{selectedExpert.bio}</p>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <div>
+                        <h4 className="font-medium text-sm text-gray-500 mb-1">التخصص</h4>
+                        <p className="text-sm">{selectedExpert.specialization}</p>
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-sm text-gray-500 mb-1">سنوات الخبرة</h4>
+                        <p className="text-sm">{selectedExpert.experience}</p>
+                      </div>
+                      {selectedExpert.education && (
+                        <div>
+                          <h4 className="font-medium text-sm text-gray-500 mb-1">المؤهل العلمي</h4>
+                          <p className="text-sm">{selectedExpert.education}</p>
+                        </div>
+                      )}
+                      <div>
+                        <h4 className="font-medium text-sm text-gray-500 mb-1">اللغات</h4>
+                        <p className="text-sm">{selectedExpert.languages}</p>
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-sm text-gray-500 mb-1">الموقع</h4>
+                        <div className="flex items-center gap-2">
+                          <MapPin className="h-4 w-4 text-gray-400" />
+                          <span className="text-sm">{selectedExpert.location}</span>
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-sm text-gray-500 mb-1">معلومات التواصل</h4>
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            <Phone className="h-4 w-4 text-gray-400" />
+                            <span className="text-sm">{selectedExpert.phone}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Mail className="h-4 w-4 text-gray-400" />
+                            <span className="text-sm">{selectedExpert.email}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="text-xs text-gray-400">
+                      انضم في: {new Date(selectedExpert.joinedDate).toLocaleDateString('ar')}
+                    </div>
                   </div>
-                  
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <h4 className="font-medium mb-2">تفاصيل الخبير:</h4>
-                    <p className="text-sm text-gray-600 mb-1">التخصص: {selectedExpert.specialization}</p>
-                    {selectedExpert.consultationFee && (
-                      <p className="text-sm text-gray-600 mb-1">الرسوم: {selectedExpert.consultationFee}</p>
-                    )}
-                    {selectedExpert.availableHours && (
-                      <p className="text-sm text-gray-600">ساعات العمل: {selectedExpert.availableHours}</p>
-                    )}
-                  </div>
-                  
-                  <div className="flex gap-4 pt-4">
-                    <Button type="submit" className="flex-1">
-                      تأكيد الحجز - Confirm Booking
-                    </Button>
-                    <Button type="button" variant="outline" onClick={() => setIsBookingOpen(false)}>
-                      إلغاء - Cancel
-                    </Button>
-                  </div>
-                </form>
+                </div>
+                
+                <div className="flex gap-4 pt-4">
+                  <Button 
+                    className="flex-1"
+                    disabled={selectedExpert.availability !== 'Available'}
+                    onClick={() => {
+                      setIsDetailsOpen(false);
+                      handleBookConsultation(selectedExpert);
+                    }}
+                  >
+                    حجز استشارة - Book Consultation
+                  </Button>
+                </div>
               </>
             )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Booking Dialog */}
+        <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>حجز استشارة - Book Consultation</DialogTitle>
+              <DialogDescription>
+                احجز استشارة مع {selectedExpert?.name}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <p className="text-center text-green-600 font-medium">
+                سيتم التواصل معك قريباً لتأكيد موعد الاستشارة
+              </p>
+              <p className="text-center text-sm text-gray-500">
+                You will be contacted soon to confirm the consultation appointment
+              </p>
+              <Button 
+                className="w-full" 
+                onClick={() => {
+                  setIsBookingOpen(false);
+                  toast({
+                    title: "تم الحجز - Booking Confirmed",
+                    description: "تم تسجيل طلب الاستشارة بنجاح - Consultation request submitted successfully",
+                  });
+                }}
+              >
+                تأكيد الحجز - Confirm Booking
+              </Button>
+            </div>
           </DialogContent>
         </Dialog>
 
         {filteredExperts.length === 0 && (
           <div className="text-center py-12">
             <div className="text-gray-400 mb-4">
-              <User className="h-16 w-16 mx-auto mb-4" />
+              <Users className="h-16 w-16 mx-auto mb-4" />
               <p className="text-xl">لم يتم العثور على خبراء - No experts found</p>
-              <p className="text-sm">جرب تعديل معايير البحث أو أضف خبير جديد - Try adjusting your search criteria or add a new expert.</p>
+              <p className="text-sm">جرب تعديل معايير البحث أو سجل كخبير جديد - Try adjusting your search criteria or register as a new expert.</p>
             </div>
           </div>
         )}

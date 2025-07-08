@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Header } from '@/components/Header';
 import { User, Database, Search, Calendar, Users } from 'lucide-react';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 
 const Index = () => {
   const features = [
@@ -40,36 +41,78 @@ const Index = () => {
   ];
 
   const stats = [
-    { label: 'Registered Farmers', value: '1,200+' },
-    { label: 'Seed Varieties', value: '500+' },
-    { label: 'Agricultural Experts', value: '50+' },
-    { label: 'Successful Matches', value: '3,400+' }
+    { label: 'Registered Farmers', value: '1,500+' },
+    { label: 'Seed Varieties', value: '800+' },
+    { label: 'Agricultural Experts', value: '75+' },
+    { label: 'Successful Matches', value: '4,200+' }
+  ];
+
+  const heroSlides = [
+    {
+      image: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=1200&h=600&fit=crop',
+      title: 'بنك البذور الرقمي',
+      subtitle: 'Bank Bthorna - Digital Seeds Bank',
+      description: 'منصة شاملة لإدارة البذور والمزارعين والخبراء الزراعيين'
+    },
+    {
+      image: 'https://images.unsplash.com/photo-1472196199053-3bf3d32c4cf0?w=1200&h=600&fit=crop',
+      title: 'ربط المزارعين بالخبراء',
+      subtitle: 'Connecting Farmers with Experts',
+      description: 'شبكة متكاملة للاستشارات الزراعية والدعم التقني'
+    },
+    {
+      image: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=1200&h=600&fit=crop',
+      title: 'تكنولوجيا الزراعة الحديثة',
+      subtitle: 'Modern Agricultural Technology',
+      description: 'أدوات ذكية لتحسين الإنتاجية والاستدامة الزراعية'
+    }
   ];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
       <Header />
       
-      {/* Hero Section */}
-      <section className="container mx-auto px-4 py-16 md:py-24">
-        <div className="text-center max-w-4xl mx-auto">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 text-shadow">
-            Connecting Farmers with
-            <span className="text-primary block">Quality Seeds & Experts</span>
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-600 mb-8 leading-relaxed">
-            A comprehensive platform for seed management, farmer registration, expert consultations, and agricultural networking. 
-            Empowering farmers with the tools and knowledge they need to grow successfully.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="text-lg px-8 py-3" asChild>
-              <Link to="/farmers">Register as Farmer</Link>
-            </Button>
-            <Button size="lg" variant="outline" className="text-lg px-8 py-3" asChild>
-              <Link to="/experts">Find Experts</Link>
-            </Button>
-          </div>
-        </div>
+      {/* Hero Carousel Section */}
+      <section className="relative">
+        <Carousel className="w-full">
+          <CarouselContent>
+            {heroSlides.map((slide, index) => (
+              <CarouselItem key={index}>
+                <div className="relative h-[600px] w-full overflow-hidden">
+                  <div 
+                    className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+                    style={{ backgroundImage: `url(${slide.image})` }}
+                  >
+                    <div className="absolute inset-0 bg-black/40" />
+                  </div>
+                  <div className="relative z-10 flex items-center justify-center h-full">
+                    <div className="text-center text-white max-w-4xl mx-auto px-4">
+                      <h1 className="text-4xl md:text-6xl font-bold mb-4">
+                        {slide.title}
+                      </h1>
+                      <h2 className="text-2xl md:text-3xl font-semibold mb-6 text-green-200">
+                        {slide.subtitle}
+                      </h2>
+                      <p className="text-xl md:text-2xl mb-8 leading-relaxed">
+                        {slide.description}
+                      </p>
+                      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                        <Button size="lg" className="text-lg px-8 py-3 bg-green-600 hover:bg-green-700" asChild>
+                          <Link to="/farmers">تسجيل كمزارع - Register as Farmer</Link>
+                        </Button>
+                        <Button size="lg" variant="outline" className="text-lg px-8 py-3 border-white text-white hover:bg-white hover:text-green-600" asChild>
+                          <Link to="/experts">العثور على خبراء - Find Experts</Link>
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="left-4" />
+          <CarouselNext className="right-4" />
+        </Carousel>
       </section>
 
       {/* Stats Section */}
@@ -90,9 +133,10 @@ const Index = () => {
       <section className="container mx-auto px-4 py-16 md:py-24">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Everything You Need for Agricultural Success
+            كل ما تحتاجه للنجاح الزراعي - Everything You Need for Agricultural Success
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            منصتنا توفر أدوات شاملة للمزارعين وموردي البذور والخبراء الزراعيين والمهنيين
             Our platform provides comprehensive tools for farmers, seed suppliers, agricultural experts, and professionals.
           </p>
         </div>
@@ -123,17 +167,18 @@ const Index = () => {
       <section className="bg-gradient-to-r from-green-600 to-emerald-600 text-white py-16">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Ready to Get Started?
+            مستعد للبدء؟ - Ready to Get Started?
           </h2>
           <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
+            انضم إلى آلاف المزارعين الذين يستخدمون منصتنا لإدارة بذورهم والتواصل مع الخبراء وتنمية أعمالهم
             Join thousands of farmers who are already using our platform to manage their seeds, connect with experts, and grow their business.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" variant="secondary" className="text-lg px-8 py-3" asChild>
-              <Link to="/farmers">Join as Farmer</Link>
+              <Link to="/farmers">انضم كمزارع - Join as Farmer</Link>
             </Button>
             <Button size="lg" variant="outline" className="text-lg px-8 py-3 border-white text-white hover:bg-white hover:text-green-600" asChild>
-              <Link to="/experts">Book Consultation</Link>
+              <Link to="/experts">حجز استشارة - Book Consultation</Link>
             </Button>
           </div>
         </div>
@@ -147,11 +192,11 @@ const Index = () => {
               <div className="h-8 w-8 rounded-full gradient-green flex items-center justify-center">
                 <Database className="h-5 w-5 text-white" />
               </div>
-              <span className="text-xl font-bold">Seed Savvy</span>
+              <span className="text-xl font-bold">Bank Bthorna</span>
             </div>
             <div className="text-center md:text-right">
-              <p className="text-gray-400 mb-2">Empowering farmers with technology and expertise</p>
-              <p className="text-sm text-gray-500">© 2024 Seed Savvy. All rights reserved.</p>
+              <p className="text-gray-400 mb-2">تمكين المزارعين بالتكنولوجيا والخبرة - Empowering farmers with technology and expertise</p>
+              <p className="text-sm text-gray-500">© 2024 Bank Bthorna. All rights reserved.</p>
             </div>
           </div>
         </div>
