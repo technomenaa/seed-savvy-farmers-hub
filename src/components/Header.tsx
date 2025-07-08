@@ -1,83 +1,82 @@
 
-import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, User, Search, Database, Users } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { useState } from 'react';
+import AdminLoginDialog from './AdminLoginDialog';
 
 export const Header = () => {
-  const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
-
-  const navigation = [
-    { name: 'Home', href: '/', icon: null },
-    { name: 'Farmers', href: '/farmers', icon: User },
-    { name: 'Seeds', href: '/seeds', icon: Database },
-    { name: 'Experts', href: '/experts', icon: Users },
-    { name: 'Search', href: '/search', icon: Search },
-  ];
-
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
+  
   const isActive = (path: string) => location.pathname === path;
 
+  const handleAdminLogin = () => {
+    setIsAdminLoggedIn(true);
+  };
+
+  const handleAdminLogout = () => {
+    setIsAdminLoggedIn(false);
+  };
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between">
-        <Link to="/" className="flex items-center space-x-2">
-          <div className="h-8 w-8 rounded-full flex items-center justify-center">
+    <header className="bg-white shadow-sm border-b sticky top-0 z-50">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between h-16">
+          <Link to="/" className="flex items-center space-x-3">
             <img 
               src="/lovable-uploads/ff41cd41-c103-4fdd-b5f3-6c59c42f131f.png" 
-              alt="Bank Bthorna"
-              className="h-8 w-8 object-contain"
+              alt="Bank Bthorna" 
+              className="h-10 w-auto"
             />
-          </div>
-          <span className="text-xl font-bold text-primary">Bank Bthorna</span>
-        </Link>
-
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-6">
-          {navigation.map((item) => (
-            <Link
-              key={item.name}
-              to={item.href}
-              className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                isActive(item.href)
-                  ? 'bg-primary text-primary-foreground'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-accent'
-              }`}
+            <span className="text-2xl font-bold text-green-600">Bank Bthorna</span>
+          </Link>
+          
+          <nav className="hidden md:flex items-center space-x-8">
+            <Link 
+              to="/" 
+              className={`transition-colors ${isActive('/') ? 'text-green-600 font-medium' : 'text-gray-600 hover:text-green-600'}`}
             >
-              {item.icon && <item.icon className="h-4 w-4" />}
-              <span>{item.name}</span>
+              Home
             </Link>
-          ))}
-        </nav>
+            <Link 
+              to="/seeds" 
+              className={`transition-colors ${isActive('/seeds') ? 'text-green-600 font-medium' : 'text-gray-600 hover:text-green-600'}`}
+            >
+              Seeds
+            </Link>
+            <Link 
+              to="/farmers" 
+              className={`transition-colors ${isActive('/farmers') ? 'text-green-600 font-medium' : 'text-gray-600 hover:text-green-600'}`}
+            >
+              Farmers
+            </Link>
+            <Link 
+              to="/experts" 
+              className={`transition-colors ${isActive('/experts') ? 'text-green-600 font-medium' : 'text-gray-600 hover:text-green-600'}`}
+            >
+              Experts
+            </Link>
+            <Link 
+              to="/search" 
+              className={`transition-colors ${isActive('/search') ? 'text-green-600 font-medium' : 'text-gray-600 hover:text-green-600'}`}
+            >
+              Search
+            </Link>
+          </nav>
 
-        {/* Mobile Navigation */}
-        <Sheet open={isOpen} onOpenChange={setIsOpen}>
-          <SheetTrigger asChild className="md:hidden">
-            <Button variant="ghost" size="icon">
-              <Menu className="h-5 w-5" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-            <nav className="flex flex-col space-y-4 mt-8">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  onClick={() => setIsOpen(false)}
-                  className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-lg transition-colors ${
-                    isActive(item.href)
-                      ? 'bg-primary text-primary-foreground'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-accent'
-                  }`}
-                >
-                  {item.icon && <item.icon className="h-5 w-5" />}
-                  <span>{item.name}</span>
-                </Link>
-              ))}
-            </nav>
-          </SheetContent>
-        </Sheet>
+          <div className="flex items-center space-x-4">
+            {isAdminLoggedIn ? (
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-green-600 font-medium">Admin Panel</span>
+                <Button variant="outline" size="sm" onClick={handleAdminLogout}>
+                  Sign Out
+                </Button>
+              </div>
+            ) : (
+              <AdminLoginDialog onAdminLogin={handleAdminLogin} />
+            )}
+          </div>
+        </div>
       </div>
     </header>
   );

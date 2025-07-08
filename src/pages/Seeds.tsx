@@ -2,11 +2,11 @@
 import { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Search, MapPin, Calendar, Leaf } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Search, MapPin, Calendar, Leaf, Edit } from 'lucide-react';
 import AddSeedDialog from '@/components/AddSeedDialog';
 import SeedRequestDialog from '@/components/SeedRequestDialog';
 
@@ -33,24 +33,53 @@ const Seeds = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedSeed, setSelectedSeed] = useState<Seed | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
 
   const categories = [
-    'Vegetables',
-    'Fruits', 
-    'Grains',
-    'Herbs',
-    'Legumes',
-    'Flowers'
+    { 
+      name: 'Vegetables', 
+      image: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=200&h=150&fit=crop',
+      count: 0
+    },
+    { 
+      name: 'Fruits', 
+      image: 'https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=200&h=150&fit=crop',
+      count: 0
+    },
+    { 
+      name: 'Grains', 
+      image: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=200&h=150&fit=crop',
+      count: 0
+    },
+    { 
+      name: 'Herbs', 
+      image: 'https://images.unsplash.com/photo-1566554273541-37a9ca77b91b?w=200&h=150&fit=crop',
+      count: 0
+    },
+    { 
+      name: 'Legumes', 
+      image: 'https://images.unsplash.com/photo-1589927986089-35812388d1f4?w=200&h=150&fit=crop',
+      count: 0
+    },
+    { 
+      name: 'Flowers', 
+      image: 'https://images.unsplash.com/photo-1597848212624-e6e5d24ec4c2?w=200&h=150&fit=crop',
+      count: 0
+    }
   ];
 
   useEffect(() => {
+    // Check if admin is logged in from localStorage or context
+    const adminStatus = localStorage.getItem('isAdminLoggedIn') === 'true';
+    setIsAdminLoggedIn(adminStatus);
+
     const sampleSeeds: Seed[] = [
       {
         id: '1',
         name: 'Tomato - Roma',
         scientificName: 'Solanum lycopersicum',
         category: 'Vegetables',
-        origin: 'Italy',
+        origin: 'Amman, Jordan',
         plantingMonth: 'March-May',
         harvestPeriod: '75-85 days',
         soilType: 'Well-drained, fertile soil',
@@ -66,7 +95,7 @@ const Seeds = () => {
         name: 'Wheat - Hard Red',
         scientificName: 'Triticum aestivum',
         category: 'Grains',
-        origin: 'Middle East',
+        origin: 'Irbid, Jordan',
         plantingMonth: 'October-December',
         harvestPeriod: '120-150 days',
         soilType: 'Clay loam, well-drained',
@@ -79,18 +108,18 @@ const Seeds = () => {
       },
       {
         id: '3',
-        name: 'Basil - Sweet',
-        scientificName: 'Ocimum basilicum',
+        name: 'Thyme - Wild',
+        scientificName: 'Thymus serpyllum',
         category: 'Herbs',
-        origin: 'India',
+        origin: 'Ajloun, Jordan',
         plantingMonth: 'April-June',
         harvestPeriod: '60-90 days',
-        soilType: 'Rich, moist, well-drained',
-        waterRequirement: 'Regular, avoid overwatering',
+        soilType: 'Rocky, well-drained soil',
+        waterRequirement: 'Low water needs',
         sunlight: 'Full sun to partial shade',
         temperature: '20-30°C',
-        description: 'Sweet basil is an aromatic herb perfect for culinary use. It\'s easy to grow and provides continuous harvest when properly maintained.',
-        image: 'https://images.unsplash.com/photo-1618164435735-413d3b066c9a?w=300&h=200&fit=crop',
+        description: 'Wild thyme is a hardy aromatic herb native to Jordan, perfect for culinary use and traditional medicine. It\'s drought-tolerant and easy to grow.',
+        image: 'https://images.unsplash.com/photo-1566554273541-37a9ca77b91b?w=300&h=200&fit=crop',
         inStock: false
       },
       {
@@ -98,7 +127,7 @@ const Seeds = () => {
         name: 'Sunflower',
         scientificName: 'Helianthus annuus',
         category: 'Flowers',
-        origin: 'North America',
+        origin: 'Zarqa, Jordan',
         plantingMonth: 'April-July',
         harvestPeriod: '80-120 days',
         soilType: 'Well-drained, fertile',
@@ -112,6 +141,12 @@ const Seeds = () => {
     ];
     setSeeds(sampleSeeds);
   }, []);
+
+  // Update category counts
+  const categoriesWithCounts = categories.map(category => ({
+    ...category,
+    count: seeds.filter(seed => seed.category === category.name).length
+  }));
 
   const filteredSeeds = seeds.filter(seed => {
     const matchesSearch = seed.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -139,6 +174,47 @@ const Seeds = () => {
           <p className="text-gray-600">Explore our comprehensive collection of seeds with detailed information</p>
         </div>
 
+        {/* Categories Section */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-semibold mb-4">Browse by Categories</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
+            <div 
+              className={`cursor-pointer p-4 rounded-lg border-2 transition-all ${
+                selectedCategory === 'all' ? 'border-green-500 bg-green-50' : 'border-gray-200 hover:border-gray-300'
+              }`}
+              onClick={() => setSelectedCategory('all')}
+            >
+              <div className="text-center">
+                <div className="w-full h-20 bg-gradient-to-r from-green-400 to-green-600 rounded-lg mb-2 flex items-center justify-center">
+                  <Leaf className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="font-medium text-sm">All Seeds</h3>
+                <p className="text-xs text-gray-500">{seeds.length} items</p>
+              </div>
+            </div>
+            
+            {categoriesWithCounts.map((category) => (
+              <div 
+                key={category.name}
+                className={`cursor-pointer p-4 rounded-lg border-2 transition-all ${
+                  selectedCategory === category.name ? 'border-green-500 bg-green-50' : 'border-gray-200 hover:border-gray-300'
+                }`}
+                onClick={() => setSelectedCategory(category.name)}
+              >
+                <div className="text-center">
+                  <img 
+                    src={category.image} 
+                    alt={category.name}
+                    className="w-full h-20 object-cover rounded-lg mb-2"
+                  />
+                  <h3 className="font-medium text-sm">{category.name}</h3>
+                  <p className="text-xs text-gray-500">{category.count} items</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
         <div className="flex flex-col lg:flex-row gap-4 mb-8">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -150,28 +226,30 @@ const Seeds = () => {
             />
           </div>
           
-          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-            <SelectTrigger className="w-full lg:w-48">
-              <SelectValue placeholder="Filter by category" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
-              {categories.map(category => (
-                <SelectItem key={category} value={category}>{category}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          
-          <AddSeedDialog onSeedAdded={handleSeedAdded} />
+          {isAdminLoggedIn && <AddSeedDialog onSeedAdded={handleSeedAdded} />}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
           {filteredSeeds.map((seed) => (
             <Card 
               key={seed.id} 
-              className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden"
+              className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden relative"
               onClick={() => handleSeedClick(seed)}
             >
+              {isAdminLoggedIn && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="absolute top-2 left-2 z-10"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    // Handle edit functionality
+                  }}
+                >
+                  <Edit className="h-3 w-3" />
+                </Button>
+              )}
+              
               <div className="relative">
                 <img 
                   src={seed.image} 
