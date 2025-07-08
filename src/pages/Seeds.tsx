@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { Database, Plus, Search, Calendar, TrendingUp, Image } from 'lucide-react';
+import { Database, Plus, Search, Calendar, TrendingUp, Image, Eye, Star, MapPin, Phone, Mail } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface Seed {
@@ -35,6 +35,8 @@ const Seeds = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState<string>('all');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedSeed, setSelectedSeed] = useState<Seed | null>(null);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [newSeed, setNewSeed] = useState({
     name: '',
     variety: '',
@@ -66,33 +68,31 @@ const Seeds = () => {
   const soilTypes = ['طينية - Clay', 'رملية - Sandy', 'طميية - Loamy', 'طينية رملية - Silty', 'مختلطة - Mixed'];
   const waterLevels = ['قليل - Low', 'متوسط - Medium', 'عالي - High'];
 
-  // صور ثابتة وموثوقة للبذور
+  // Updated image URLs that work reliably
   const getImageForSeedType = (type: string) => {
     const imageMap: { [key: string]: string } = {
-      'Cereals': 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-      'Vegetables': 'https://images.unsplash.com/photo-1590779033100-9f60a05a013d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-      'Legumes': 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-      'Fruits': 'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-      'Herbs': 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-      'Cash Crops': 'https://images.unsplash.com/photo-1472396961693-142e6e269027?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80'
+      'Cereals': '/placeholder.svg?height=200&width=300&text=Cereals',
+      'Vegetables': '/placeholder.svg?height=200&width=300&text=Vegetables',
+      'Legumes': '/placeholder.svg?height=200&width=300&text=Legumes',
+      'Fruits': '/placeholder.svg?height=200&width=300&text=Fruits',
+      'Herbs': '/placeholder.svg?height=200&width=300&text=Herbs',
+      'Cash Crops': '/placeholder.svg?height=200&width=300&text=Cash+Crops'
     };
-    return imageMap[type] || 'https://images.unsplash.com/photo-1465379944081-7f47de8d74ac?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80';
+    return imageMap[type] || '/placeholder.svg?height=200&width=300&text=Seeds';
   };
 
-  // Load seeds from localStorage
   useEffect(() => {
     const savedSeeds = localStorage.getItem('seeds');
     if (savedSeeds) {
       setSeeds(JSON.parse(savedSeeds));
     } else {
-      // البيانات النموذجية مع صور محسّنة
       const sampleSeeds: Seed[] = [
         {
           id: '1',
           name: 'القمح الممتاز - Premium Wheat',
           variety: 'قمح شتوي أحمر قاسي - Hard Red Winter',
           type: 'Cereals',
-          description: 'صنف قمح عالي الإنتاجية مثالي لصنع الخبز مع مقاومة ممتازة للأمراض - High-yield wheat variety perfect for bread making with excellent disease resistance.',
+          description: 'صنف قمح عالي الإنتاجية مثالي لصنع الخبز مع مقاومة ممتازة للأمراض. يتميز بحبوب كبيرة وقوام ممتاز للطحن. مناسب للمناخ البارد والمعتدل.',
           plantingSeason: 'الخريف - Fall',
           harvestTime: '120 يوم - 120 days',
           yieldPotential: '45-55 بوشل/فدان - bushels/acre',
@@ -103,14 +103,14 @@ const Seeds = () => {
           pricePerKg: '$12.50',
           availability: 'In Stock',
           addedDate: '2024-01-10',
-          imageUrl: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+          imageUrl: '/placeholder.svg?height=200&width=300&text=Premium+Wheat'
         },
         {
           id: '2',
           name: 'الذرة الذهبية - Golden Corn',
           variety: 'ذرة حلوة هجين - Sweet Corn Hybrid',
           type: 'Cereals',
-          description: 'ذرة حلوة سريعة النمو بطعم ممتاز وتطور منتظم للكيزان - Fast-growing sweet corn with excellent taste and uniform ear development.',
+          description: 'ذرة حلوة سريعة النمو بطعم ممتاز وتطور منتظم للكيزان. مقاومة للآفات والأمراض الشائعة. مثالية للاستهلاك الطازج والتجميد.',
           plantingSeason: 'الربيع - Spring',
           harvestTime: '85 يوم - 85 days',
           yieldPotential: '180-200 بوشل/فدان - bushels/acre',
@@ -121,14 +121,14 @@ const Seeds = () => {
           pricePerKg: '$8.75',
           availability: 'In Stock',
           addedDate: '2024-01-15',
-          imageUrl: 'https://images.unsplash.com/photo-1551754655-cd27e38d2076?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+          imageUrl: '/placeholder.svg?height=200&width=300&text=Golden+Corn'
         },
         {
           id: '3',
           name: 'طماطم روما - Roma Tomato',
           variety: 'محدد النمو - Determinate',
           type: 'Vegetables',
-          description: 'طماطم روما مقاومة للأمراض مثالية لإنتاج الصلصة والمعجون - Disease-resistant Roma tomatoes perfect for sauce and paste production.',
+          description: 'طماطم روما مقاومة للأمراض مثالية لإنتاج الصلصة والمعجون. ثمار بيضاوية الشكل، لحم كثيف، وقليلة البذور. مناسبة للزراعة التجارية.',
           plantingSeason: 'الربيع - Spring',
           harvestTime: '75 يوم - 75 days',
           yieldPotential: '15-20 طن/فدان - tons/acre',
@@ -139,97 +139,7 @@ const Seeds = () => {
           pricePerKg: '$25.00',
           availability: 'Limited',
           addedDate: '2024-02-01',
-          imageUrl: 'https://images.unsplash.com/photo-1546470427-e26264be0b12?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
-        },
-        {
-          id: '4',
-          name: 'الخيار الأخضر - Green Cucumber',
-          variety: 'خيار منزلي - Home Garden',
-          type: 'Vegetables',
-          description: 'خيار منعش وطازج مثالي للسلطات والمخللات - Fresh and crisp cucumbers perfect for salads and pickling.',
-          plantingSeason: 'الربيع - Spring',
-          harvestTime: '60 يوم - 60 days',
-          yieldPotential: '10-15 طن/فدان - tons/acre',
-          waterRequirement: 'عالي - High',
-          soilType: 'طميية - Loamy',
-          region: 'البحر المتوسط - Mediterranean',
-          supplier: 'بذور الخضار الطازجة - Fresh Veggie Seeds',
-          pricePerKg: '$18.00',
-          availability: 'In Stock',
-          addedDate: '2024-02-05',
-          imageUrl: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
-        },
-        {
-          id: '5',
-          name: 'الفاصوليا البيضاء - White Beans',
-          variety: 'فاصوليا كلوية - Kidney Beans',
-          type: 'Legumes',
-          description: 'فاصوليا بيضاء غنية بالبروتين مثالية للطبخات التقليدية - Protein-rich white beans perfect for traditional cooking.',
-          plantingSeason: 'الربيع - Spring',
-          harvestTime: '90 يوم - 90 days',
-          yieldPotential: '12-18 بوشل/فدان - bushels/acre',
-          waterRequirement: 'متوسط - Medium',
-          soilType: 'طميية - Loamy',
-          region: 'الشرق الأوسط - Middle East',
-          supplier: 'بذور البقوليات المميزة - Premium Legume Seeds',
-          pricePerKg: '$22.00',
-          availability: 'In Stock',
-          addedDate: '2024-02-10',
-          imageUrl: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
-        },
-        {
-          id: '6',
-          name: 'النعناع العربي - Arabic Mint',
-          variety: 'نعناع بلدي - Local Mint',
-          type: 'Herbs',
-          description: 'نعناع عربي أصيل برائحة عطرة مثالي للشاي والطبخ - Authentic Arabic mint with aromatic fragrance perfect for tea and cooking.',
-          plantingSeason: 'طوال السنة - Year-round',
-          harvestTime: '45 يوم - 45 days',
-          yieldPotential: '5-8 طن/فدان - tons/acre',
-          waterRequirement: 'عالي - High',
-          soilType: 'طميية - Loamy',
-          region: 'بلاد الشام - Levant',
-          supplier: 'بذور الأعشاب الطبيعية - Natural Herbs Seeds',
-          pricePerKg: '$35.00',
-          availability: 'Limited',
-          addedDate: '2024-02-15',
-          imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
-        },
-        {
-          id: '7',
-          name: 'القطن المصري - Egyptian Cotton',
-          variety: 'قطن طويل التيلة - Long Staple',
-          type: 'Cash Crops',
-          description: 'قطن مصري فاخر طويل التيلة معروف بجودته العالمية - Premium Egyptian long-staple cotton known for its world-class quality.',
-          plantingSeason: 'الربيع - Spring',
-          harvestTime: '180 يوم - 180 days',
-          yieldPotential: '800-1000 كيلو/فدان - kg/acre',
-          waterRequirement: 'عالي - High',
-          soilType: 'طينية - Clay',
-          region: 'دلتا النيل - Nile Delta',
-          supplier: 'شركة القطن المصري - Egyptian Cotton Co.',
-          pricePerKg: '$45.00',
-          availability: 'In Stock',
-          addedDate: '2024-02-20',
-          imageUrl: 'https://images.unsplash.com/photo-1503066211613-c17ebc9daef0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
-        },
-        {
-          id: '8',
-          name: 'التفاح الأحمر - Red Apples',
-          variety: 'تفاح فوجي - Fuji Apples',
-          type: 'Fruits',
-          description: 'بذور تفاح أحمر حلو ومقرمش مثالي للمناطق المعتدلة - Sweet and crispy red apple seeds perfect for temperate regions.',
-          plantingSeason: 'الخريف - Fall',
-          harvestTime: '3-5 سنوات - 3-5 years',
-          yieldPotential: '20-30 طن/فدان - tons/acre',
-          waterRequirement: 'متوسط - Medium',
-          soilType: 'مختلطة - Mixed',
-          region: 'المناطق الجبلية - Mountain Regions',
-          supplier: 'مشاتل الفواكه الممتازة - Premium Fruit Nursery',
-          pricePerKg: '$120.00',
-          availability: 'Limited',
-          addedDate: '2024-02-25',
-          imageUrl: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+          imageUrl: '/placeholder.svg?height=200&width=300&text=Roma+Tomato'
         }
       ];
       setSeeds(sampleSeeds);
@@ -237,7 +147,6 @@ const Seeds = () => {
     }
   }, []);
 
-  // Save seeds to localStorage
   useEffect(() => {
     if (seeds.length > 0) {
       localStorage.setItem('seeds', JSON.stringify(seeds));
@@ -318,7 +227,6 @@ const Seeds = () => {
           <p className="text-gray-600">إدارة مخزون البذور مع معلومات مفصلة وتوافر - Manage seed inventory with detailed information and availability</p>
         </div>
 
-        {/* Action Bar */}
         <div className="flex flex-col lg:flex-row gap-4 mb-8">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -518,7 +426,6 @@ const Seeds = () => {
           </Dialog>
         </div>
 
-        {/* Statistics */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardContent className="p-6">
@@ -570,7 +477,6 @@ const Seeds = () => {
           </Card>
         </div>
 
-        {/* Type Categories Display */}
         <div className="mb-8">
           <h2 className="text-xl font-semibold mb-4">التصنيفات المتاحة - Available Categories</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -591,14 +497,6 @@ const Seeds = () => {
                         alt={type.label}
                         className="w-full h-full object-cover"
                         loading="lazy"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.style.display = 'none';
-                          const parent = target.parentElement;
-                          if (parent) {
-                            parent.innerHTML = `<div class="text-2xl">${type.value === 'Cereals' ? '🌾' : type.value === 'Vegetables' ? '🥕' : type.value === 'Legumes' ? '🫘' : type.value === 'Fruits' ? '🍎' : type.value === 'Herbs' ? '🌿' : '🌱'}</div>`;
-                          }
-                        }}
                       />
                     </div>
                     <h3 className="font-medium text-sm mb-1">{type.label}</h3>
@@ -620,17 +518,6 @@ const Seeds = () => {
                   alt={seed.name}
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                   loading="lazy"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = getImageForSeedType(seed.type);
-                    target.onerror = () => {
-                      target.style.display = 'none';
-                      const parent = target.parentElement;
-                      if (parent) {
-                        parent.innerHTML = `<div class="text-6xl text-gray-400">${seed.type === 'Cereals' ? '🌾' : seed.type === 'Vegetables' ? '🥕' : seed.type === 'Legumes' ? '🫘' : seed.type === 'Fruits' ? '🍎' : seed.type === 'Herbs' ? '🌿' : '🌱'}</div>`;
-                      }
-                    };
-                  }}
                 />
               </div>
               <CardHeader className="pb-4">
@@ -650,51 +537,142 @@ const Seeds = () => {
               </CardHeader>
               <CardContent className="space-y-3">
                 {seed.description && (
-                  <p className="text-sm text-gray-600 line-clamp-3">{seed.description}</p>
+                  <p className="text-sm text-gray-600 line-clamp-2">{seed.description.substring(0, 100)}...</p>
                 )}
                 
                 <div className="grid grid-cols-2 gap-2 text-sm">
                   {seed.plantingSeason && (
                     <div>
-                      <span className="font-medium">الموسم:</span> {seed.plantingSeason}
+                      <span className="font-medium">الموسم:</span> {seed.plantingSeason.split(' - ')[0]}
                     </div>
                   )}
                   {seed.harvestTime && (
                     <div>
-                      <span className="font-medium">الحصاد:</span> {seed.harvestTime}
-                    </div>
-                  )}
-                  {seed.waterRequirement && (
-                    <div>
-                      <span className="font-medium">المياه:</span> {seed.waterRequirement}
-                    </div>
-                  )}
-                  {seed.soilType && (
-                    <div>
-                      <span className="font-medium">التربة:</span> {seed.soilType}
+                      <span className="font-medium">الحصاد:</span> {seed.harvestTime.split(' - ')[0]}
                     </div>
                   )}
                 </div>
-                
-                {seed.yieldPotential && (
-                  <p className="text-sm"><span className="font-medium">الإنتاج:</span> {seed.yieldPotential}</p>
-                )}
-                
-                {seed.supplier && (
-                  <p className="text-sm"><span className="font-medium">المورد:</span> {seed.supplier}</p>
-                )}
                 
                 {seed.pricePerKg && (
                   <p className="text-sm font-semibold text-primary">السعر: {seed.pricePerKg}</p>
                 )}
                 
-                <p className="text-xs text-gray-400">
-                  تاريخ الإضافة: {new Date(seed.addedDate).toLocaleDateString('ar')}
-                </p>
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => {
+                    setSelectedSeed(seed);
+                    setIsDetailsOpen(true);
+                  }}
+                >
+                  <Eye className="h-4 w-4 mr-2" />
+                  عرض التفاصيل - View Details
+                </Button>
               </CardContent>
             </Card>
           ))}
         </div>
+
+        {/* Seed Details Dialog */}
+        <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            {selectedSeed && (
+              <>
+                <DialogHeader>
+                  <DialogTitle className="text-2xl">{selectedSeed.name}</DialogTitle>
+                  <DialogDescription>
+                    {selectedSeed.variety} - تفاصيل شاملة عن البذرة
+                  </DialogDescription>
+                </DialogHeader>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <div className="h-64 w-full overflow-hidden rounded-lg bg-gray-100 flex items-center justify-center">
+                      <img 
+                        src={selectedSeed.imageUrl} 
+                        alt={selectedSeed.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    
+                    <div className="flex items-center gap-2">
+                      <Badge className={getAvailabilityColor(selectedSeed.availability)} className="text-sm">
+                        {selectedSeed.availability === 'In Stock' ? 'متوفر' : 
+                         selectedSeed.availability === 'Limited' ? 'محدود' : 'غير متوفر'}
+                      </Badge>
+                      <Badge variant="secondary">
+                        {seedTypes.find(t => t.value === selectedSeed.type)?.label || selectedSeed.type}
+                      </Badge>
+                    </div>
+                    
+                    {selectedSeed.pricePerKg && (
+                      <div className="text-2xl font-bold text-primary">
+                        السعر: {selectedSeed.pricePerKg}
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="font-semibold text-lg mb-2">الوصف - Description</h3>
+                      <p className="text-gray-600 leading-relaxed">{selectedSeed.description}</p>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      {selectedSeed.plantingSeason && (
+                        <div>
+                          <h4 className="font-medium text-sm text-gray-500 mb-1">موسم الزراعة</h4>
+                          <p className="text-sm">{selectedSeed.plantingSeason}</p>
+                        </div>
+                      )}
+                      {selectedSeed.harvestTime && (
+                        <div>
+                          <h4 className="font-medium text-sm text-gray-500 mb-1">وقت الحصاد</h4>
+                          <p className="text-sm">{selectedSeed.harvestTime}</p>
+                        </div>
+                      )}
+                      {selectedSeed.waterRequirement && (
+                        <div>
+                          <h4 className="font-medium text-sm text-gray-500 mb-1">متطلبات المياه</h4>
+                          <p className="text-sm">{selectedSeed.waterRequirement}</p>
+                        </div>
+                      )}
+                      {selectedSeed.soilType && (
+                        <div>
+                          <h4 className="font-medium text-sm text-gray-500 mb-1">نوع التربة</h4>
+                          <p className="text-sm">{selectedSeed.soilType}</p>
+                        </div>
+                      )}
+                      {selectedSeed.yieldPotential && (
+                        <div>
+                          <h4 className="font-medium text-sm text-gray-500 mb-1">إمكانية الإنتاج</h4>
+                          <p className="text-sm">{selectedSeed.yieldPotential}</p>
+                        </div>
+                      )}
+                      {selectedSeed.region && (
+                        <div>
+                          <h4 className="font-medium text-sm text-gray-500 mb-1">المنطقة</h4>
+                          <p className="text-sm">{selectedSeed.region}</p>
+                        </div>
+                      )}
+                    </div>
+                    
+                    {selectedSeed.supplier && (
+                      <div>
+                        <h4 className="font-medium text-sm text-gray-500 mb-1">المورد</h4>
+                        <p className="text-sm">{selectedSeed.supplier}</p>
+                      </div>
+                    )}
+                    
+                    <div className="text-xs text-gray-400">
+                      تاريخ الإضافة: {new Date(selectedSeed.addedDate).toLocaleDateString('ar')}
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+          </DialogContent>
+        </Dialog>
 
         {filteredSeeds.length === 0 && (
           <div className="text-center py-12">

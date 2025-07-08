@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Header } from '@/components/Header';
-import { User, Database, Search, Calendar } from 'lucide-react';
+import { User, Database, Search, Calendar, Users } from 'lucide-react';
 
 const Index = () => {
   const features = [
@@ -26,6 +26,12 @@ const Index = () => {
       link: '/search'
     },
     {
+      icon: Users,
+      title: 'Agricultural Experts',
+      description: 'Connect with agricultural experts and book specialized consultations for your farming needs.',
+      link: '/experts'
+    },
+    {
       icon: Calendar,
       title: 'Management Dashboard',
       description: 'Administrative interface for managing all platform data and user information.',
@@ -36,7 +42,7 @@ const Index = () => {
   const stats = [
     { label: 'Registered Farmers', value: '1,200+' },
     { label: 'Seed Varieties', value: '500+' },
-    { label: 'Active Regions', value: '25' },
+    { label: 'Agricultural Experts', value: '50+' },
     { label: 'Successful Matches', value: '3,400+' }
   ];
 
@@ -49,18 +55,18 @@ const Index = () => {
         <div className="text-center max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 text-shadow">
             Connecting Farmers with
-            <span className="text-primary block">Quality Seeds</span>
+            <span className="text-primary block">Quality Seeds & Experts</span>
           </h1>
           <p className="text-xl md:text-2xl text-gray-600 mb-8 leading-relaxed">
-            A comprehensive platform for seed management, farmer registration, and agricultural networking. 
-            Empowering farmers with the tools they need to grow successfully.
+            A comprehensive platform for seed management, farmer registration, expert consultations, and agricultural networking. 
+            Empowering farmers with the tools and knowledge they need to grow successfully.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" className="text-lg px-8 py-3" asChild>
               <Link to="/farmers">Register as Farmer</Link>
             </Button>
             <Button size="lg" variant="outline" className="text-lg px-8 py-3" asChild>
-              <Link to="/seeds">Browse Seeds</Link>
+              <Link to="/experts">Find Experts</Link>
             </Button>
           </div>
         </div>
@@ -84,14 +90,14 @@ const Index = () => {
       <section className="container mx-auto px-4 py-16 md:py-24">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Everything You Need for Seed Management
+            Everything You Need for Agricultural Success
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Our platform provides comprehensive tools for farmers, seed suppliers, and agricultural professionals.
+            Our platform provides comprehensive tools for farmers, seed suppliers, agricultural experts, and professionals.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
           {features.map((feature, index) => (
             <Card key={index} className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20">
               <CardHeader className="pb-4">
@@ -120,14 +126,14 @@ const Index = () => {
             Ready to Get Started?
           </h2>
           <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
-            Join thousands of farmers who are already using our platform to manage their seeds and grow their business.
+            Join thousands of farmers who are already using our platform to manage their seeds, connect with experts, and grow their business.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" variant="secondary" className="text-lg px-8 py-3" asChild>
               <Link to="/farmers">Join as Farmer</Link>
             </Button>
             <Button size="lg" variant="outline" className="text-lg px-8 py-3 border-white text-white hover:bg-white hover:text-green-600" asChild>
-              <Link to="/search">Explore Platform</Link>
+              <Link to="/experts">Book Consultation</Link>
             </Button>
           </div>
         </div>
@@ -144,7 +150,7 @@ const Index = () => {
               <span className="text-xl font-bold">Seed Savvy</span>
             </div>
             <div className="text-center md:text-right">
-              <p className="text-gray-400 mb-2">Empowering farmers with technology</p>
+              <p className="text-gray-400 mb-2">Empowering farmers with technology and expertise</p>
               <p className="text-sm text-gray-500">© 2024 Seed Savvy. All rights reserved.</p>
             </div>
           </div>
