@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
 import { Button } from '@/components/ui/button';
@@ -8,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Calendar, Star, MapPin, Phone, Mail, Users, Clock, Award, Search } from 'lucide-react';
+import { Calendar, Star, MapPin, Phone, Mail, Users, Clock, Award, Search, CalendarDays } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import ExpertRegistration from '@/components/ExpertRegistration';
 
@@ -39,19 +38,21 @@ const Experts = () => {
   const [selectedExpert, setSelectedExpert] = useState<Expert | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [bookingDate, setBookingDate] = useState('');
+  const [bookingTime, setBookingTime] = useState('');
   const { toast } = useToast();
 
   const specializations = [
-    'محاصيل الحبوب - Grain Crops',
-    'الخضروات - Vegetables', 
-    'الفواكه - Fruits',
-    'البقوليات - Legumes',
-    'المحاصيل النقدية - Cash Crops',
-    'الزراعة العضوية - Organic Farming',
-    'إدارة الآفات - Pest Management',
-    'تربة وأسمدة - Soil & Fertilizers',
-    'الري والمياه - Irrigation & Water',
-    'التسويق الزراعي - Agricultural Marketing'
+    'Grain Crops',
+    'Vegetables', 
+    'Fruits',
+    'Legumes',
+    'Cash Crops',
+    'Organic Farming',
+    'Pest Management',
+    'Soil & Fertilizers',
+    'Irrigation & Water',
+    'Agricultural Marketing'
   ];
 
   useEffect(() => {
@@ -62,60 +63,79 @@ const Experts = () => {
       const sampleExperts: Expert[] = [
         {
           id: '1',
-          name: 'د. أحمد محمد علي - Dr. Ahmed Mohamed Ali',
-          expertise: 'مهندس زراعي أول - Senior Agricultural Engineer',
-          specialization: 'محاصيل الحبوب - Grain Crops',
-          experience: '10-15 سنة - 10-15 years',
+          name: 'Dr. Ahmed Mohamed Ali',
+          expertise: 'Senior Agricultural Engineer',
+          specialization: 'Grain Crops',
+          experience: '10-15 years',
           rating: '4.8',
           totalConsultations: 250,
-          location: 'القاهرة، مصر - Cairo, Egypt',
+          location: 'Cairo, Egypt',
           phone: '+20 123 456 7890',
           email: 'ahmed.ali@email.com',
-          bio: 'خبير في زراعة محاصيل الحبوب مع خبرة واسعة في تحسين الإنتاجية وإدارة الأمراض النباتية. حاصل على دكتوراه في الهندسة الزراعية من جامعة القاهرة.',
-          languages: 'العربية، الإنجليزية - Arabic, English',
+          bio: 'Expert in grain crop cultivation with extensive experience in improving productivity and managing plant diseases. PhD in Agricultural Engineering from Cairo University.',
+          languages: 'Arabic, English',
           consultationFee: '$60/hour',
           availability: 'Available',
           avatar: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=150&h=150&fit=crop&crop=face',
           joinedDate: '2023-01-15',
-          education: 'دكتوراه هندسة زراعية - PhD Agricultural Engineering'
+          education: 'PhD Agricultural Engineering'
         },
         {
           id: '2',
-          name: 'د. فاطمة حسن - Dr. Fatima Hassan',
-          expertise: 'خبيرة زراعة عضوية - Organic Farming Specialist',
-          specialization: 'الزراعة العضوية - Organic Farming',
-          experience: '5-10 سنوات - 5-10 years',
+          name: 'Dr. Fatima Hassan',
+          expertise: 'Organic Farming Specialist',
+          specialization: 'Organic Farming',
+          experience: '5-10 years',
           rating: '4.9',
           totalConsultations: 180,
-          location: 'الإسكندرية، مصر - Alexandria, Egypt',
+          location: 'Alexandria, Egypt',
           phone: '+20 987 654 3210',
           email: 'fatima.hassan@email.com',
-          bio: 'متخصصة في الزراعة العضوية والاستدامة البيئية. تساعد المزارعين في التحول إلى الزراعة الصديقة للبيئة وتحسين جودة المحاصيل.',
-          languages: 'العربية، الإنجليزية، الفرنسية - Arabic, English, French',
+          bio: 'Specialist in organic farming and environmental sustainability. Helps farmers transition to eco-friendly farming practices and improve crop quality.',
+          languages: 'Arabic, English, French',
           consultationFee: '$45/hour',
           availability: 'Available',
           avatar: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&h=150&fit=crop&crop=face',
           joinedDate: '2023-03-20',
-          education: 'ماجستير زراعة عضوية - MSc Organic Agriculture'
+          education: 'MSc Organic Agriculture'
         },
         {
           id: '3',
-          name: 'م. خالد الأحمد - Eng. Khaled Al-Ahmad',
-          expertise: 'خبير أنظمة الري - Irrigation Systems Expert',
-          specialization: 'الري والمياه - Irrigation & Water',
-          experience: '15+ سنة - 15+ years',
+          name: 'Eng. Khaled Al-Ahmad',
+          expertise: 'Irrigation Systems Expert',
+          specialization: 'Irrigation & Water',
+          experience: '15+ years',
           rating: '4.7',
           totalConsultations: 320,
-          location: 'دمشق، سوريا - Damascus, Syria',
+          location: 'Damascus, Syria',
           phone: '+963 123 456 789',
           email: 'khaled.ahmad@email.com',
-          bio: 'خبير في تصميم وتنفيذ أنظمة الري الحديثة والري بالتنقيط. يساعد المزارعين في تحسين كفاءة استخدام المياه وزيادة الإنتاجية.',
-          languages: 'العربية، الإنجليزية - Arabic, English',
+          bio: 'Expert in designing and implementing modern irrigation systems and drip irrigation. Helps farmers improve water use efficiency and increase productivity.',
+          languages: 'Arabic, English',
           consultationFee: '$55/hour',
           availability: 'Busy',
           avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
           joinedDate: '2022-11-10',
-          education: 'بكالوريوس هندسة مدنية - BSc Civil Engineering'
+          education: 'BSc Civil Engineering'
+        },
+        {
+          id: '4',
+          name: 'Dr. Sarah Johnson',
+          expertise: 'Plant Pathologist',
+          specialization: 'Pest Management',
+          experience: '8-12 years',
+          rating: '4.6',
+          totalConsultations: 195,
+          location: 'London, UK',
+          phone: '+44 20 7946 0958',
+          email: 'sarah.johnson@email.com',
+          bio: 'Plant pathologist specializing in integrated pest management and disease control. Expert in sustainable approaches to crop protection and biological control methods.',
+          languages: 'English, Arabic',
+          consultationFee: '$70/hour',
+          availability: 'Available',
+          avatar: 'https://images.unsplash.com/photo-1594824694271-15920b65c60e?w=150&h=150&fit=crop&crop=face',
+          joinedDate: '2023-06-12',
+          education: 'PhD Plant Pathology'
         }
       ];
       setExperts(sampleExperts);
@@ -137,8 +157,8 @@ const Experts = () => {
       return updated;
     });
     toast({
-      title: "نجح - Success",
-      description: "تم إضافة الخبير بنجاح! - Expert added successfully!",
+      title: "Success",
+      description: "Expert registered successfully!",
     });
   };
 
@@ -166,21 +186,40 @@ const Experts = () => {
     setIsBookingOpen(true);
   };
 
+  const handleConfirmBooking = () => {
+    if (!bookingDate || !bookingTime) {
+      toast({
+        title: "Error",
+        description: "Please select both date and time for your consultation.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsBookingOpen(false);
+    setBookingDate('');
+    setBookingTime('');
+    toast({
+      title: "Booking Confirmed",
+      description: `Consultation booked with ${selectedExpert?.name} on ${bookingDate} at ${bookingTime}`,
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
       
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">الخبراء الزراعيون - Agricultural Experts</h1>
-          <p className="text-gray-600">تواصل مع خبراء زراعيين معتمدين واحجز استشارات متخصصة - Connect with certified agricultural experts and book specialized consultations</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Agricultural Experts</h1>
+          <p className="text-gray-600">Connect with certified agricultural experts and book specialized consultations</p>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-4 mb-8">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
-              placeholder="البحث في الخبراء بالاسم أو التخصص... - Search experts by name or specialization..."
+              placeholder="Search experts by name or specialization..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -189,10 +228,10 @@ const Experts = () => {
           
           <Select value={selectedSpecialization} onValueChange={setSelectedSpecialization}>
             <SelectTrigger className="w-full lg:w-64">
-              <SelectValue placeholder="تصفية حسب التخصص - Filter by specialization" />
+              <SelectValue placeholder="Filter by specialization" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">جميع التخصصات - All Specializations</SelectItem>
+              <SelectItem value="all">All Specializations</SelectItem>
               {specializations.map(spec => (
                 <SelectItem key={spec} value={spec}>{spec}</SelectItem>
               ))}
@@ -208,7 +247,7 @@ const Experts = () => {
               <div className="flex items-center">
                 <Users className="h-8 w-8 text-primary" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">إجمالي الخبراء - Total Experts</p>
+                  <p className="text-sm font-medium text-gray-600">Total Experts</p>
                   <p className="text-2xl font-bold">{experts.length}</p>
                 </div>
               </div>
@@ -219,7 +258,7 @@ const Experts = () => {
               <div className="flex items-center">
                 <Clock className="h-8 w-8 text-green-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">متاح - Available</p>
+                  <p className="text-sm font-medium text-gray-600">Available</p>
                   <p className="text-2xl font-bold text-green-600">
                     {experts.filter(e => e.availability === 'Available').length}
                   </p>
@@ -232,7 +271,7 @@ const Experts = () => {
               <div className="flex items-center">
                 <Award className="h-8 w-8 text-yellow-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">تقييم عالي - High Rating</p>
+                  <p className="text-sm font-medium text-gray-600">High Rating</p>
                   <p className="text-2xl font-bold text-yellow-600">
                     {experts.filter(e => parseFloat(e.rating) >= 4.5).length}
                   </p>
@@ -245,7 +284,7 @@ const Experts = () => {
               <div className="flex items-center">
                 <Search className="h-8 w-8 text-primary" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">نتائج البحث - Search Results</p>
+                  <p className="text-sm font-medium text-gray-600">Search Results</p>
                   <p className="text-2xl font-bold">{filteredExperts.length}</p>
                 </div>
               </div>
@@ -272,8 +311,7 @@ const Experts = () => {
                         <span className="text-sm font-medium ml-1">{expert.rating}</span>
                       </div>
                       <Badge className={getAvailabilityColor(expert.availability)}>
-                        {expert.availability === 'Available' ? 'متاح' : 
-                         expert.availability === 'Busy' ? 'مشغول' : 'غير متاح'}
+                        {expert.availability}
                       </Badge>
                     </div>
                   </div>
@@ -295,12 +333,12 @@ const Experts = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <Users className="h-4 w-4 text-gray-400" />
-                    <span>{expert.totalConsultations} استشارة - consultations</span>
+                    <span>{expert.totalConsultations} consultations</span>
                   </div>
                 </div>
                 
                 {expert.consultationFee && (
-                  <p className="text-sm font-semibold text-primary">الرسوم: {expert.consultationFee}</p>
+                  <p className="text-sm font-semibold text-primary">Fee: {expert.consultationFee}</p>
                 )}
                 
                 <div className="flex gap-2 pt-2">
@@ -313,7 +351,7 @@ const Experts = () => {
                       setIsDetailsOpen(true);
                     }}
                   >
-                    التفاصيل - Details
+                    Details
                   </Button>
                   <Button 
                     size="sm"
@@ -321,7 +359,7 @@ const Experts = () => {
                     disabled={expert.availability !== 'Available'}
                     onClick={() => handleBookConsultation(expert)}
                   >
-                    حجز استشارة - Book
+                    Book
                   </Button>
                 </div>
               </CardContent>
@@ -337,7 +375,7 @@ const Experts = () => {
                 <DialogHeader>
                   <DialogTitle className="text-2xl">{selectedExpert.name}</DialogTitle>
                   <DialogDescription>
-                    {selectedExpert.expertise} - معلومات مفصلة عن الخبير
+                    {selectedExpert.expertise} - Detailed expert information
                   </DialogDescription>
                 </DialogHeader>
                 
@@ -355,8 +393,7 @@ const Experts = () => {
                             <span className="font-bold ml-1">{selectedExpert.rating}</span>
                           </div>
                           <Badge className={getAvailabilityColor(selectedExpert.availability)}>
-                            {selectedExpert.availability === 'Available' ? 'متاح' : 
-                             selectedExpert.availability === 'Busy' ? 'مشغول' : 'غير متاح'}
+                            {selectedExpert.availability}
                           </Badge>
                         </div>
                         <p className="text-lg font-semibold">{selectedExpert.consultationFee}</p>
@@ -366,38 +403,38 @@ const Experts = () => {
                   
                   <div className="space-y-6">
                     <div>
-                      <h3 className="font-semibold text-lg mb-2">النبذة الشخصية - Bio</h3>
+                      <h3 className="font-semibold text-lg mb-2">Bio</h3>
                       <p className="text-gray-600 leading-relaxed">{selectedExpert.bio}</p>
                     </div>
                     
                     <div className="space-y-3">
                       <div>
-                        <h4 className="font-medium text-sm text-gray-500 mb-1">التخصص</h4>
+                        <h4 className="font-medium text-sm text-gray-500 mb-1">Specialization</h4>
                         <p className="text-sm">{selectedExpert.specialization}</p>
                       </div>
                       <div>
-                        <h4 className="font-medium text-sm text-gray-500 mb-1">سنوات الخبرة</h4>
+                        <h4 className="font-medium text-sm text-gray-500 mb-1">Experience</h4>
                         <p className="text-sm">{selectedExpert.experience}</p>
                       </div>
                       {selectedExpert.education && (
                         <div>
-                          <h4 className="font-medium text-sm text-gray-500 mb-1">المؤهل العلمي</h4>
+                          <h4 className="font-medium text-sm text-gray-500 mb-1">Education</h4>
                           <p className="text-sm">{selectedExpert.education}</p>
                         </div>
                       )}
                       <div>
-                        <h4 className="font-medium text-sm text-gray-500 mb-1">اللغات</h4>
+                        <h4 className="font-medium text-sm text-gray-500 mb-1">Languages</h4>
                         <p className="text-sm">{selectedExpert.languages}</p>
                       </div>
                       <div>
-                        <h4 className="font-medium text-sm text-gray-500 mb-1">الموقع</h4>
+                        <h4 className="font-medium text-sm text-gray-500 mb-1">Location</h4>
                         <div className="flex items-center gap-2">
                           <MapPin className="h-4 w-4 text-gray-400" />
                           <span className="text-sm">{selectedExpert.location}</span>
                         </div>
                       </div>
                       <div>
-                        <h4 className="font-medium text-sm text-gray-500 mb-1">معلومات التواصل</h4>
+                        <h4 className="font-medium text-sm text-gray-500 mb-1">Contact Information</h4>
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
                             <Phone className="h-4 w-4 text-gray-400" />
@@ -412,7 +449,7 @@ const Experts = () => {
                     </div>
                     
                     <div className="text-xs text-gray-400">
-                      انضم في: {new Date(selectedExpert.joinedDate).toLocaleDateString('ar')}
+                      Joined: {new Date(selectedExpert.joinedDate).toLocaleDateString()}
                     </div>
                   </div>
                 </div>
@@ -426,7 +463,7 @@ const Experts = () => {
                       handleBookConsultation(selectedExpert);
                     }}
                   >
-                    حجز استشارة - Book Consultation
+                    Book Consultation
                   </Button>
                 </div>
               </>
@@ -438,29 +475,42 @@ const Experts = () => {
         <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
           <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle>حجز استشارة - Book Consultation</DialogTitle>
+              <DialogTitle>Book Consultation</DialogTitle>
               <DialogDescription>
-                احجز استشارة مع {selectedExpert?.name}
+                Book a consultation with {selectedExpert?.name}
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
-              <p className="text-center text-green-600 font-medium">
-                سيتم التواصل معك قريباً لتأكيد موعد الاستشارة
-              </p>
-              <p className="text-center text-sm text-gray-500">
-                You will be contacted soon to confirm the consultation appointment
-              </p>
+              <div>
+                <label className="text-sm font-medium">Select Date</label>
+                <Input
+                  type="date"
+                  value={bookingDate}
+                  onChange={(e) => setBookingDate(e.target.value)}
+                  min={new Date().toISOString().split('T')[0]}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Select Time</label>
+                <Select value={bookingTime} onValueChange={setBookingTime}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Choose time slot" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="09:00">09:00 AM</SelectItem>
+                    <SelectItem value="10:00">10:00 AM</SelectItem>
+                    <SelectItem value="11:00">11:00 AM</SelectItem>
+                    <SelectItem value="14:00">02:00 PM</SelectItem>
+                    <SelectItem value="15:00">03:00 PM</SelectItem>
+                    <SelectItem value="16:00">04:00 PM</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
               <Button 
                 className="w-full" 
-                onClick={() => {
-                  setIsBookingOpen(false);
-                  toast({
-                    title: "تم الحجز - Booking Confirmed",
-                    description: "تم تسجيل طلب الاستشارة بنجاح - Consultation request submitted successfully",
-                  });
-                }}
+                onClick={handleConfirmBooking}
               >
-                تأكيد الحجز - Confirm Booking
+                Confirm Booking
               </Button>
             </div>
           </DialogContent>
@@ -470,8 +520,8 @@ const Experts = () => {
           <div className="text-center py-12">
             <div className="text-gray-400 mb-4">
               <Users className="h-16 w-16 mx-auto mb-4" />
-              <p className="text-xl">لم يتم العثور على خبراء - No experts found</p>
-              <p className="text-sm">جرب تعديل معايير البحث أو سجل كخبير جديد - Try adjusting your search criteria or register as a new expert.</p>
+              <p className="text-xl">No experts found</p>
+              <p className="text-sm">Try adjusting your search criteria or register as a new expert.</p>
             </div>
           </div>
         )}

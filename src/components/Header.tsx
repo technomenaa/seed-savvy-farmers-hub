@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, User, Search, Database } from 'lucide-react';
+import { Menu, User, Search, Database, Users } from 'lucide-react';
 
 export const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,6 +13,7 @@ export const Header = () => {
     { name: 'Home', href: '/', icon: null },
     { name: 'Farmers', href: '/farmers', icon: User },
     { name: 'Seeds', href: '/seeds', icon: Database },
+    { name: 'Experts', href: '/experts', icon: Users },
     { name: 'Search', href: '/search', icon: Search },
   ];
 
@@ -22,10 +23,14 @@ export const Header = () => {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center space-x-2">
-          <div className="h-8 w-8 rounded-full gradient-green flex items-center justify-center">
-            <Database className="h-5 w-5 text-white" />
+          <div className="h-8 w-8 rounded-full flex items-center justify-center">
+            <img 
+              src="/lovable-uploads/ff41cd41-c103-4fdd-b5f3-6c59c42f131f.png" 
+              alt="Bank Bthorna"
+              className="h-8 w-8 object-contain"
+            />
           </div>
-          <span className="text-xl font-bold text-primary">Seed Savvy</span>
+          <span className="text-xl font-bold text-primary">Bank Bthorna</span>
         </Link>
 
         {/* Desktop Navigation */}

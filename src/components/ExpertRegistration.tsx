@@ -32,24 +32,24 @@ const ExpertRegistration = ({ onExpertAdded }: ExpertRegistrationProps) => {
   const { toast } = useToast();
 
   const specializations = [
-    'محاصيل الحبوب - Grain Crops',
-    'الخضروات - Vegetables', 
-    'الفواكه - Fruits',
-    'البقوليات - Legumes',
-    'المحاصيل النقدية - Cash Crops',
-    'الزراعة العضوية - Organic Farming',
-    'إدارة الآفات - Pest Management',
-    'تربة وأسمدة - Soil & Fertilizers',
-    'الري والمياه - Irrigation & Water',
-    'التسويق الزراعي - Agricultural Marketing'
+    'Grain Crops',
+    'Vegetables', 
+    'Fruits',
+    'Legumes',
+    'Cash Crops',
+    'Organic Farming',
+    'Pest Management',
+    'Soil & Fertilizers',
+    'Irrigation & Water',
+    'Agricultural Marketing'
   ];
 
   const experienceLevels = [
-    '1-3 سنوات - 1-3 years',
-    '3-5 سنوات - 3-5 years', 
-    '5-10 سنوات - 5-10 years',
-    '10-15 سنة - 10-15 years',
-    'أكثر من 15 سنة - 15+ years'
+    '1-3 years',
+    '3-5 years', 
+    '5-10 years',
+    '10-15 years',
+    '15+ years'
   ];
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -57,8 +57,8 @@ const ExpertRegistration = ({ onExpertAdded }: ExpertRegistrationProps) => {
     
     if (!newExpert.name || !newExpert.specialization || !newExpert.experience) {
       toast({
-        title: "خطأ - Error",
-        description: "يرجى ملء جميع الحقول المطلوبة - Please fill in all required fields.",
+        title: "Error",
+        description: "Please fill in all required fields.",
         variant: "destructive"
       });
       return;
@@ -93,8 +93,8 @@ const ExpertRegistration = ({ onExpertAdded }: ExpertRegistrationProps) => {
     setIsOpen(false);
     
     toast({
-      title: "نجح - Success",
-      description: "تم تسجيل الخبير بنجاح! - Expert registered successfully!",
+      title: "Success",
+      description: "Expert registered successfully!",
     });
   };
 
@@ -103,21 +103,21 @@ const ExpertRegistration = ({ onExpertAdded }: ExpertRegistrationProps) => {
       <DialogTrigger asChild>
         <Button className="flex items-center gap-2">
           <UserPlus className="h-4 w-4" />
-          تسجيل كخبير - Register as Expert
+          Register as Expert
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>تسجيل خبير زراعي جديد - Register New Agricultural Expert</DialogTitle>
+          <DialogTitle>Register New Agricultural Expert</DialogTitle>
           <DialogDescription>
-            أدخل معلومات مفصلة عن خبرتك ومجال تخصصك - Enter detailed information about your expertise and specialization.
+            Enter detailed information about your expertise and specialization.
           </DialogDescription>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="name">الاسم الكامل - Full Name *</Label>
+              <Label htmlFor="name">Full Name *</Label>
               <Input
                 id="name"
                 value={newExpert.name}
@@ -126,20 +126,20 @@ const ExpertRegistration = ({ onExpertAdded }: ExpertRegistrationProps) => {
               />
             </div>
             <div>
-              <Label htmlFor="expertise">المسمى الوظيفي - Job Title *</Label>
+              <Label htmlFor="expertise">Job Title *</Label>
               <Input
                 id="expertise"
-                placeholder="مثل: مهندس زراعي أول - e.g., Senior Agricultural Engineer"
+                placeholder="e.g., Senior Agricultural Engineer"
                 value={newExpert.expertise}
                 onChange={(e) => setNewExpert({...newExpert, expertise: e.target.value})}
                 required
               />
             </div>
             <div>
-              <Label htmlFor="specialization">التخصص - Specialization *</Label>
+              <Label htmlFor="specialization">Specialization *</Label>
               <Select value={newExpert.specialization} onValueChange={(value) => setNewExpert({...newExpert, specialization: value})}>
                 <SelectTrigger>
-                  <SelectValue placeholder="اختر مجال التخصص - Select specialization" />
+                  <SelectValue placeholder="Select specialization" />
                 </SelectTrigger>
                 <SelectContent>
                   {specializations.map(spec => (
@@ -149,10 +149,10 @@ const ExpertRegistration = ({ onExpertAdded }: ExpertRegistrationProps) => {
               </Select>
             </div>
             <div>
-              <Label htmlFor="experience">سنوات الخبرة - Years of Experience *</Label>
+              <Label htmlFor="experience">Years of Experience *</Label>
               <Select value={newExpert.experience} onValueChange={(value) => setNewExpert({...newExpert, experience: value})}>
                 <SelectTrigger>
-                  <SelectValue placeholder="اختر سنوات الخبرة - Select experience level" />
+                  <SelectValue placeholder="Select experience level" />
                 </SelectTrigger>
                 <SelectContent>
                   {experienceLevels.map(exp => (
@@ -162,25 +162,25 @@ const ExpertRegistration = ({ onExpertAdded }: ExpertRegistrationProps) => {
               </Select>
             </div>
             <div>
-              <Label htmlFor="education">المؤهل العلمي - Education</Label>
+              <Label htmlFor="education">Education</Label>
               <Input
                 id="education"
-                placeholder="مثل: بكالوريوس هندسة زراعية - e.g., B.Sc Agricultural Engineering"
+                placeholder="e.g., B.Sc Agricultural Engineering"
                 value={newExpert.education}
                 onChange={(e) => setNewExpert({...newExpert, education: e.target.value})}
               />
             </div>
             <div>
-              <Label htmlFor="location">الموقع - Location</Label>
+              <Label htmlFor="location">Location</Label>
               <Input
                 id="location"
-                placeholder="المدينة، البلد - City, Country"
+                placeholder="City, Country"
                 value={newExpert.location}
                 onChange={(e) => setNewExpert({...newExpert, location: e.target.value})}
               />
             </div>
             <div>
-              <Label htmlFor="phone">رقم الهاتف - Phone Number</Label>
+              <Label htmlFor="phone">Phone Number</Label>
               <Input
                 id="phone"
                 value={newExpert.phone}
@@ -188,7 +188,7 @@ const ExpertRegistration = ({ onExpertAdded }: ExpertRegistrationProps) => {
               />
             </div>
             <div>
-              <Label htmlFor="email">البريد الإلكتروني - Email</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -197,19 +197,19 @@ const ExpertRegistration = ({ onExpertAdded }: ExpertRegistrationProps) => {
               />
             </div>
             <div>
-              <Label htmlFor="languages">اللغات - Languages</Label>
+              <Label htmlFor="languages">Languages</Label>
               <Input
                 id="languages"
-                placeholder="العربية، الإنجليزية - Arabic, English"
+                placeholder="Arabic, English"
                 value={newExpert.languages}
                 onChange={(e) => setNewExpert({...newExpert, languages: e.target.value})}
               />
             </div>
             <div>
-              <Label htmlFor="consultationFee">رسوم الاستشارة - Consultation Fee</Label>
+              <Label htmlFor="consultationFee">Consultation Fee</Label>
               <Input
                 id="consultationFee"
-                placeholder="مثل: $50/ساعة - e.g., $50/hour"
+                placeholder="e.g., $50/hour"
                 value={newExpert.consultationFee}
                 onChange={(e) => setNewExpert({...newExpert, consultationFee: e.target.value})}
               />
@@ -217,10 +217,10 @@ const ExpertRegistration = ({ onExpertAdded }: ExpertRegistrationProps) => {
           </div>
           
           <div>
-            <Label htmlFor="bio">نبذة شخصية - Bio</Label>
+            <Label htmlFor="bio">Bio</Label>
             <Textarea
               id="bio"
-              placeholder="اكتب نبذة عن خبرتك ومجال تخصصك... - Write about your experience and specialization..."
+              placeholder="Write about your experience and specialization..."
               value={newExpert.bio}
               onChange={(e) => setNewExpert({...newExpert, bio: e.target.value})}
               rows={4}
@@ -228,9 +228,9 @@ const ExpertRegistration = ({ onExpertAdded }: ExpertRegistrationProps) => {
           </div>
           
           <div className="flex gap-4 pt-4">
-            <Button type="submit" className="flex-1">تسجيل الخبير - Register Expert</Button>
+            <Button type="submit" className="flex-1">Register Expert</Button>
             <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>
-              إلغاء - Cancel
+              Cancel
             </Button>
           </div>
         </form>

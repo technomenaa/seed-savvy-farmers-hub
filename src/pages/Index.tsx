@@ -41,30 +41,29 @@ const Index = () => {
   ];
 
   const stats = [
-    { label: 'Registered Farmers', value: '1,500+' },
-    { label: 'Seed Varieties', value: '800+' },
-    { label: 'Agricultural Experts', value: '75+' },
-    { label: 'Successful Matches', value: '4,200+' }
+    { label: 'Registered Farmers', value: '850+' },
+    { label: 'Seed Varieties', value: '600+' },
+    { label: 'Agricultural Experts', value: '45+' }
   ];
 
   const heroSlides = [
     {
       image: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=1200&h=600&fit=crop',
-      title: 'بنك البذور الرقمي',
-      subtitle: 'Bank Bthorna - Digital Seeds Bank',
-      description: 'منصة شاملة لإدارة البذور والمزارعين والخبراء الزراعيين'
+      title: 'Digital Seed Bank Platform',
+      subtitle: 'Bank Bthorna - Preserving Agricultural Heritage',
+      description: 'A digital seed bank platform, offering detailed profiles for every seed empowering researchers and agri-innovators with easy access to accurate, up-to-date data essential for advancing agricultural research, protecting biodiversity, and building a food-secure future.'
     },
     {
       image: 'https://images.unsplash.com/photo-1472196199053-3bf3d32c4cf0?w=1200&h=600&fit=crop',
-      title: 'ربط المزارعين بالخبراء',
-      subtitle: 'Connecting Farmers with Experts',
-      description: 'شبكة متكاملة للاستشارات الزراعية والدعم التقني'
+      title: 'From Seeds to Solutions',
+      subtitle: 'Empowering Agriculture Through Data',
+      description: 'Connect researchers, farmers, and agricultural experts through our comprehensive platform designed to advance agricultural innovation and sustainability.'
     },
     {
       image: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=1200&h=600&fit=crop',
-      title: 'تكنولوجيا الزراعة الحديثة',
+      title: 'Building Food Security',
       subtitle: 'Modern Agricultural Technology',
-      description: 'أدوات ذكية لتحسين الإنتاجية والاستدامة الزراعية'
+      description: 'Smart tools for improving productivity and agricultural sustainability while preserving genetic diversity for future generations.'
     }
   ];
 
@@ -98,10 +97,10 @@ const Index = () => {
                       </p>
                       <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <Button size="lg" className="text-lg px-8 py-3 bg-green-600 hover:bg-green-700" asChild>
-                          <Link to="/farmers">تسجيل كمزارع - Register as Farmer</Link>
+                          <Link to="/farmers">Register as Farmer</Link>
                         </Button>
                         <Button size="lg" variant="outline" className="text-lg px-8 py-3 border-white text-white hover:bg-white hover:text-green-600" asChild>
-                          <Link to="/experts">العثور على خبراء - Find Experts</Link>
+                          <Link to="/experts">Find Experts</Link>
                         </Button>
                       </div>
                     </div>
@@ -118,7 +117,7 @@ const Index = () => {
       {/* Stats Section */}
       <section className="bg-primary text-primary-foreground py-16">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {stats.map((stat, index) => (
               <div key={index} className="text-center">
                 <div className="text-3xl md:text-4xl font-bold mb-2">{stat.value}</div>
@@ -133,10 +132,9 @@ const Index = () => {
       <section className="container mx-auto px-4 py-16 md:py-24">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            كل ما تحتاجه للنجاح الزراعي - Everything You Need for Agricultural Success
+            Everything You Need for Agricultural Success
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            منصتنا توفر أدوات شاملة للمزارعين وموردي البذور والخبراء الزراعيين والمهنيين
             Our platform provides comprehensive tools for farmers, seed suppliers, agricultural experts, and professionals.
           </p>
         </div>
@@ -167,18 +165,17 @@ const Index = () => {
       <section className="bg-gradient-to-r from-green-600 to-emerald-600 text-white py-16">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            مستعد للبدء؟ - Ready to Get Started?
+            Ready to Get Started?
           </h2>
           <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
-            انضم إلى آلاف المزارعين الذين يستخدمون منصتنا لإدارة بذورهم والتواصل مع الخبراء وتنمية أعمالهم
-            Join thousands of farmers who are already using our platform to manage their seeds, connect with experts, and grow their business.
+            Join thousands of farmers, researchers, and agricultural professionals who are already using our platform to advance agricultural research and innovation.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" variant="secondary" className="text-lg px-8 py-3" asChild>
-              <Link to="/farmers">انضم كمزارع - Join as Farmer</Link>
+              <Link to="/farmers">Join as Farmer</Link>
             </Button>
             <Button size="lg" variant="outline" className="text-lg px-8 py-3 border-white text-white hover:bg-white hover:text-green-600" asChild>
-              <Link to="/experts">حجز استشارة - Book Consultation</Link>
+              <Link to="/experts">Book Consultation</Link>
             </Button>
           </div>
         </div>
@@ -189,13 +186,17 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center space-x-2 mb-4 md:mb-0">
-              <div className="h-8 w-8 rounded-full gradient-green flex items-center justify-center">
-                <Database className="h-5 w-5 text-white" />
+              <div className="h-8 w-8 rounded-full flex items-center justify-center">
+                <img 
+                  src="/lovable-uploads/ff41cd41-c103-4fdd-b5f3-6c59c42f131f.png" 
+                  alt="Bank Bthorna"
+                  className="h-8 w-8 object-contain"
+                />
               </div>
               <span className="text-xl font-bold">Bank Bthorna</span>
             </div>
             <div className="text-center md:text-right">
-              <p className="text-gray-400 mb-2">تمكين المزارعين بالتكنولوجيا والخبرة - Empowering farmers with technology and expertise</p>
+              <p className="text-gray-400 mb-2">Empowering agriculture through data and innovation</p>
               <p className="text-sm text-gray-500">© 2024 Bank Bthorna. All rights reserved.</p>
             </div>
           </div>
