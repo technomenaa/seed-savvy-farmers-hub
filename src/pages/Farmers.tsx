@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
 import { Input } from '@/components/ui/input';
@@ -6,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Search, MapPin, Leaf, Phone, Mail, Edit } from 'lucide-react';
+import AddFarmerDialog from '@/components/AddFarmerDialog';
 
 interface Farmer {
   id: string;
@@ -49,70 +51,83 @@ const Farmers = () => {
     const adminStatus = localStorage.getItem('isAdminLoggedIn') === 'true';
     setIsAdminLoggedIn(adminStatus);
 
-    const sampleFarmers: Farmer[] = [
-      {
-        id: '1',
-        name: 'Ahmad Al-Rashid',
-        location: 'Amman',
-        specialties: ['Organic Farming', 'Seed Production'],
-        experience: '15 years',
-        farmSize: '25 hectares',
-        contact: {
-          phone: '+962 79 123 4567',
-          email: 'ahmad.rashid@email.com'
+    // Load farmers from localStorage or use sample data
+    const savedFarmers = localStorage.getItem('farmers');
+    if (savedFarmers) {
+      setFarmers(JSON.parse(savedFarmers));
+    } else {
+      const sampleFarmers: Farmer[] = [
+        {
+          id: '1',
+          name: 'Ahmad Al-Rashid',
+          location: 'Amman',
+          specialties: ['Organic Farming', 'Seed Production'],
+          experience: '15 years',
+          farmSize: '25 hectares',
+          contact: {
+            phone: '+962 79 123 4567',
+            email: 'ahmad.rashid@email.com'
+          },
+          crops: ['Wheat', 'Barley', 'Vegetables'],
+          image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop',
+          verified: true
         },
-        crops: ['Wheat', 'Barley', 'Vegetables'],
-        image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop',
-        verified: true
-      },
-      {
-        id: '2',
-        name: 'Fatima Al-Zoubi',
-        location: 'Irbid',
-        specialties: ['Dairy Farming', 'Livestock Management'],
-        experience: '20 years',
-        farmSize: '40 hectares',
-        contact: {
-          phone: '+962 78 876 5432',
-          email: 'fatima.zoubi@email.com'
+        {
+          id: '2',
+          name: 'Fatima Al-Zoubi',
+          location: 'Irbid',
+          specialties: ['Dairy Farming', 'Livestock Management'],
+          experience: '20 years',
+          farmSize: '40 hectares',
+          contact: {
+            phone: '+962 78 876 5432',
+            email: 'fatima.zoubi@email.com'
+          },
+          crops: ['Corn', 'Alfalfa'],
+          image: 'https://images.unsplash.com/photo-1552058544-f62903996921?w=300&h=300&fit=crop',
+          verified: true
         },
-        crops: ['Corn', 'Alfalfa'],
-        image: 'https://images.unsplash.com/photo-1552058544-f62903996921?w=300&h=300&fit=crop',
-        verified: true
-      },
-      {
-        id: '3',
-        name: 'Yousef Al-Nasser',
-        location: 'Zarqa',
-        specialties: ['Poultry Farming', 'Egg Production'],
-        experience: '10 years',
-        farmSize: '15 hectares',
-        contact: {
-          phone: '+962 77 234 5678',
-          email: 'yousef.nasser@email.com'
+        {
+          id: '3',
+          name: 'Yousef Al-Nasser',
+          location: 'Zarqa',
+          specialties: ['Poultry Farming', 'Egg Production'],
+          experience: '10 years',
+          farmSize: '15 hectares',
+          contact: {
+            phone: '+962 77 234 5678',
+            email: 'yousef.nasser@email.com'
+          },
+          crops: ['Soybeans', 'Sorghum'],
+          image: 'https://images.unsplash.com/photo-1544006659-f0b21884ce1d?w=300&h=300&fit=crop',
+          verified: false
         },
-        crops: ['Soybeans', 'Sorghum'],
-        image: 'https://images.unsplash.com/photo-1544006659-f0b21884ce1d?w=300&h=300&fit=crop',
-        verified: false
-      },
-      {
-        id: '4',
-        name: 'Layla Haddad',
-        location: 'Ajloun',
-        specialties: ['Fruit Orchards', 'Olive Cultivation'],
-        experience: '25 years',
-        farmSize: '30 hectares',
-        contact: {
-          phone: '+962 79 987 6543',
-          email: 'layla.haddad@email.com'
-        },
-        crops: ['Olives', 'Apples', 'Pears'],
-        image: 'https://images.unsplash.com/photo-1494790108377-be9c29b88331?w=300&h=300&fit=crop',
-        verified: true
-      }
-    ];
-    setFarmers(sampleFarmers);
+        {
+          id: '4',
+          name: 'Layla Haddad',
+          location: 'Ajloun',
+          specialties: ['Fruit Orchards', 'Olive Cultivation'],
+          experience: '25 years',
+          farmSize: '30 hectares',
+          contact: {
+            phone: '+962 79 987 6543',
+            email: 'layla.haddad@email.com'
+          },
+          crops: ['Olives', 'Apples', 'Pears'],
+          image: 'https://images.unsplash.com/photo-1494790108377-be9c29b88331?w=300&h=300&fit=crop',
+          verified: true
+        }
+      ];
+      setFarmers(sampleFarmers);
+      localStorage.setItem('farmers', JSON.stringify(sampleFarmers));
+    }
   }, []);
+
+  const handleFarmerAdded = (newFarmer: Farmer) => {
+    const updatedFarmers = [...farmers, newFarmer];
+    setFarmers(updatedFarmers);
+    localStorage.setItem('farmers', JSON.stringify(updatedFarmers));
+  };
 
   const filteredFarmers = farmers.filter(farmer => {
     const matchesSearch = farmer.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -126,7 +141,10 @@ const Farmers = () => {
 
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Our Farmers</h1>
+          <div className="flex justify-between items-center mb-2">
+            <h1 className="text-3xl font-bold text-gray-900">Our Farmers</h1>
+            {isAdminLoggedIn && <AddFarmerDialog onFarmerAdded={handleFarmerAdded} />}
+          </div>
           <p className="text-gray-600">Connect with experienced farmers from around Jordan</p>
         </div>
 
