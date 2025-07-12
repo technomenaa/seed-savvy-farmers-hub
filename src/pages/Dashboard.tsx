@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -56,8 +55,8 @@ interface Expert {
 
 const Dashboard = () => {
   const [farmers, setFarmers] = useState<Farmer[]>([]);
-  const [seeds, setSeeds] = useState<Seed[]>([]);
-  const [experts, setExperts] = useState<Expert[]>([]);
+  const [seeds, setSeeds] = useState<any[]>([]);
+  const [experts, setExperts] = useState<any[]>([]);
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
 
   useEffect(() => {
@@ -133,8 +132,8 @@ const Dashboard = () => {
       
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">لوحة تحكم الأدمن</h1>
-          <p className="text-gray-600">نظرة شاملة على المزارعين والبذور والخبراء والإحصائيات</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
+          <p className="text-gray-600">Comprehensive overview of farmers, seeds, experts and statistics</p>
         </div>
 
         {/* Key Statistics */}
@@ -144,9 +143,9 @@ const Dashboard = () => {
               <div className="flex items-center">
                 <Users className="h-8 w-8 text-blue-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">إجمالي المزارعين</p>
+                  <p className="text-sm font-medium text-gray-600">Total Farmers</p>
                   <p className="text-2xl font-bold">{totalFarmers}</p>
-                  <p className="text-xs text-gray-500">موثق: {verifiedFarmers}</p>
+                  <p className="text-xs text-gray-500">Verified: {verifiedFarmers}</p>
                 </div>
               </div>
             </CardContent>
@@ -157,9 +156,9 @@ const Dashboard = () => {
               <div className="flex items-center">
                 <Leaf className="h-8 w-8 text-green-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">إجمالي البذور</p>
+                  <p className="text-sm font-medium text-gray-600">Total Seeds</p>
                   <p className="text-2xl font-bold">{totalSeeds}</p>
-                  <p className="text-xs text-gray-500">أنواع البذور</p>
+                  <p className="text-xs text-gray-500">Seed types</p>
                 </div>
               </div>
             </CardContent>
@@ -170,9 +169,9 @@ const Dashboard = () => {
               <div className="flex items-center">
                 <UserCheck className="h-8 w-8 text-purple-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">إجمالي الخبراء</p>
+                  <p className="text-sm font-medium text-gray-600">Total Experts</p>
                   <p className="text-2xl font-bold">{totalExperts}</p>
-                  <p className="text-xs text-gray-500">موثق: {verifiedExperts}</p>
+                  <p className="text-xs text-gray-500">Verified: {verifiedExperts}</p>
                 </div>
               </div>
             </CardContent>
@@ -183,9 +182,9 @@ const Dashboard = () => {
               <div className="flex items-center">
                 <TrendingUp className="h-8 w-8 text-emerald-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">البذور المتوفرة</p>
+                  <p className="text-sm font-medium text-gray-600">Available Seeds</p>
                   <p className="text-2xl font-bold">{availableSeeds}</p>
-                  <p className="text-xs text-gray-500">{stockPercentage.toFixed(1)}% متوفر</p>
+                  <p className="text-xs text-gray-500">{stockPercentage.toFixed(1)}% available</p>
                 </div>
               </div>
             </CardContent>
@@ -197,15 +196,15 @@ const Dashboard = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Activity className="h-5 w-5" />
-              حالة المخزون
+              Stock Status
             </CardTitle>
-            <CardDescription>توفر البذور الحالي عبر جميع الأنواع</CardDescription>
+            <CardDescription>Current seed availability across all types</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div>
                 <div className="flex justify-between text-sm mb-2">
-                  <span>المخزون المتوفر ({availableSeeds} نوع)</span>
+                  <span>Available Stock ({availableSeeds} types)</span>
                   <span>{stockPercentage.toFixed(1)}%</span>
                 </div>
                 <Progress value={stockPercentage} className="h-2" />
@@ -213,19 +212,19 @@ const Dashboard = () => {
               <div className="grid grid-cols-3 gap-4 text-center">
                 <div className="p-4 bg-green-50 rounded-lg">
                   <p className="text-2xl font-bold text-green-600">{availableSeeds}</p>
-                  <p className="text-sm text-green-700">متوفر</p>
+                  <p className="text-sm text-green-700">Available</p>
                 </div>
                 <div className="p-4 bg-yellow-50 rounded-lg">
                   <p className="text-2xl font-bold text-yellow-600">
                     {seeds.filter(s => s.availability === 'محدود').length}
                   </p>
-                  <p className="text-sm text-yellow-700">محدود</p>
+                  <p className="text-sm text-yellow-700">Limited</p>
                 </div>
                 <div className="p-4 bg-red-50 rounded-lg">
                   <p className="text-2xl font-bold text-red-600">
                     {seeds.filter(s => s.availability === 'غير متوفر').length}
                   </p>
-                  <p className="text-sm text-red-700">غير متوفر</p>
+                  <p className="text-sm text-red-700">Unavailable</p>
                 </div>
               </div>
             </div>
@@ -236,8 +235,8 @@ const Dashboard = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           <Card>
             <CardHeader>
-              <CardTitle>التوزيع الجغرافي</CardTitle>
-              <CardDescription>المزارعين والبذور والخبراء حسب المحافظة</CardDescription>
+              <CardTitle>Geographic Distribution</CardTitle>
+              <CardDescription>Farmers, seeds and experts by region</CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
@@ -246,9 +245,9 @@ const Dashboard = () => {
                   <XAxis dataKey="location" />
                   <YAxis />
                   <Tooltip />
-                  <Bar dataKey="farmers" fill="#3b82f6" name="مزارعون" />
-                  <Bar dataKey="seeds" fill="#10b981" name="بذور" />
-                  <Bar dataKey="experts" fill="#8b5cf6" name="خبراء" />
+                  <Bar dataKey="farmers" fill="#3b82f6" name="Farmers" />
+                  <Bar dataKey="seeds" fill="#10b981" name="Seeds" />
+                  <Bar dataKey="experts" fill="#8b5cf6" name="Experts" />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
@@ -256,8 +255,8 @@ const Dashboard = () => {
 
           <Card>
             <CardHeader>
-              <CardTitle>توفر البذور</CardTitle>
-              <CardDescription>تفصيل حالة المخزون الحالية</CardDescription>
+              <CardTitle>Seed Availability</CardTitle>
+              <CardDescription>Current stock status breakdown</CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
@@ -296,26 +295,26 @@ const Dashboard = () => {
         {/* Data Tables */}
         <Tabs defaultValue="farmers" className="space-y-4">
           <TabsList>
-            <TabsTrigger value="farmers">المزارعون</TabsTrigger>
-            <TabsTrigger value="seeds">البذور</TabsTrigger>
-            <TabsTrigger value="experts">الخبراء</TabsTrigger>
+            <TabsTrigger value="farmers">Farmers</TabsTrigger>
+            <TabsTrigger value="seeds">Seeds</TabsTrigger>
+            <TabsTrigger value="experts">Experts</TabsTrigger>
           </TabsList>
 
           <TabsContent value="farmers">
             <Card>
               <CardHeader>
-                <CardTitle>قائمة المزارعين</CardTitle>
-                <CardDescription>جميع المزارعين المسجلين في المنصة</CardDescription>
+                <CardTitle>Farmers List</CardTitle>
+                <CardDescription>All registered farmers on the platform</CardDescription>
               </CardHeader>
               <CardContent>
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>الاسم</TableHead>
-                      <TableHead>الموقع</TableHead>
-                      <TableHead>التخصص</TableHead>
-                      <TableHead>الخبرة</TableHead>
-                      <TableHead>الحالة</TableHead>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Location</TableHead>
+                      <TableHead>Specialization</TableHead>
+                      <TableHead>Experience</TableHead>
+                      <TableHead>Status</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -323,11 +322,11 @@ const Dashboard = () => {
                       <TableRow key={farmer.id}>
                         <TableCell className="font-medium">{farmer.name}</TableCell>
                         <TableCell>{farmer.location}</TableCell>
-                        <TableCell>{farmer.specialties[0] || 'غير محدد'}</TableCell>
+                        <TableCell>{farmer.specialties[0] || 'Not specified'}</TableCell>
                         <TableCell>{farmer.experience}</TableCell>
                         <TableCell>
                           <Badge variant={farmer.verified ? "default" : "secondary"}>
-                            {farmer.verified ? 'موثق' : 'غير موثق'}
+                            {farmer.verified ? 'Verified' : 'Unverified'}
                           </Badge>
                         </TableCell>
                       </TableRow>
@@ -335,7 +334,7 @@ const Dashboard = () => {
                   </TableBody>
                 </Table>
                 {farmers.length === 0 && (
-                  <p className="text-center text-gray-500 py-8">لا يوجد مزارعون مسجلون</p>
+                  <p className="text-center text-gray-500 py-8">No farmers registered</p>
                 )}
               </CardContent>
             </Card>
@@ -344,18 +343,18 @@ const Dashboard = () => {
           <TabsContent value="seeds">
             <Card>
               <CardHeader>
-                <CardTitle>قائمة البذور</CardTitle>
-                <CardDescription>جميع أنواع البذور المتاحة</CardDescription>
+                <CardTitle>Seeds List</CardTitle>
+                <CardDescription>All available seed types</CardDescription>
               </CardHeader>
               <CardContent>
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>النوع</TableHead>
-                      <TableHead>الفئة</TableHead>
-                      <TableHead>السعر</TableHead>
-                      <TableHead>الموقع</TableHead>
-                      <TableHead>التوفر</TableHead>
+                      <TableHead>Type</TableHead>
+                      <TableHead>Category</TableHead>
+                      <TableHead>Price</TableHead>
+                      <TableHead>Location</TableHead>
+                      <TableHead>Availability</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -380,7 +379,7 @@ const Dashboard = () => {
                   </TableBody>
                 </Table>
                 {seeds.length === 0 && (
-                  <p className="text-center text-gray-500 py-8">لا توجد بذور مضافة</p>
+                  <p className="text-center text-gray-500 py-8">No seeds added</p>
                 )}
               </CardContent>
             </Card>
@@ -389,18 +388,18 @@ const Dashboard = () => {
           <TabsContent value="experts">
             <Card>
               <CardHeader>
-                <CardTitle>قائمة الخبراء</CardTitle>
-                <CardDescription>جميع الخبراء المسجلين في المنصة</CardDescription>
+                <CardTitle>Experts List</CardTitle>
+                <CardDescription>All registered experts on the platform</CardDescription>
               </CardHeader>
               <CardContent>
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>الاسم</TableHead>
-                      <TableHead>التخصص</TableHead>
-                      <TableHead>الخبرة</TableHead>
-                      <TableHead>الموقع</TableHead>
-                      <TableHead>الحالة</TableHead>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Specialization</TableHead>
+                      <TableHead>Experience</TableHead>
+                      <TableHead>Location</TableHead>
+                      <TableHead>Status</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -412,7 +411,7 @@ const Dashboard = () => {
                         <TableCell>{expert.location}</TableCell>
                         <TableCell>
                           <Badge variant={expert.verified ? "default" : "secondary"}>
-                            {expert.verified ? 'موثق' : 'غير موثق'}
+                            {expert.verified ? 'Verified' : 'Unverified'}
                           </Badge>
                         </TableCell>
                       </TableRow>
@@ -420,7 +419,7 @@ const Dashboard = () => {
                   </TableBody>
                 </Table>
                 {experts.length === 0 && (
-                  <p className="text-center text-gray-500 py-8">لا يوجد خبراء مسجلون</p>
+                  <p className="text-center text-gray-500 py-8">No experts registered</p>
                 )}
               </CardContent>
             </Card>

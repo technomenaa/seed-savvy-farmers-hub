@@ -46,38 +46,38 @@ export const Header = () => {
               to="/" 
               className={`transition-colors ${isActive('/') ? 'text-green-600 font-medium' : 'text-gray-600 hover:text-green-600'}`}
             >
-              الرئيسية
+              Home
             </Link>
             <Link 
               to="/seeds" 
               className={`transition-colors ${isActive('/seeds') ? 'text-green-600 font-medium' : 'text-gray-600 hover:text-green-600'}`}
             >
-              البذور
+              Seeds
             </Link>
             <Link 
               to="/farmers" 
               className={`transition-colors ${isActive('/farmers') ? 'text-green-600 font-medium' : 'text-gray-600 hover:text-green-600'}`}
             >
-              المزارعون
+              Farmers
             </Link>
             <Link 
               to="/experts" 
               className={`transition-colors ${isActive('/experts') ? 'text-green-600 font-medium' : 'text-gray-600 hover:text-green-600'}`}
             >
-              الخبراء
+              Experts
             </Link>
             <Link 
               to="/search" 
               className={`transition-colors ${isActive('/search') ? 'text-green-600 font-medium' : 'text-gray-600 hover:text-green-600'}`}
             >
-              البحث
+              Search
             </Link>
             {isAdminLoggedIn && (
               <Link 
                 to="/dashboard" 
                 className={`transition-colors ${isActive('/dashboard') ? 'text-green-600 font-medium' : 'text-gray-600 hover:text-green-600'}`}
               >
-                لوحة التحكم
+                Dashboard
               </Link>
             )}
           </nav>
@@ -85,9 +85,9 @@ export const Header = () => {
           <div className="flex items-center space-x-4">
             {isAdminLoggedIn ? (
               <div className="flex items-center space-x-2">
-                <span className="text-sm text-green-600 font-medium">لوحة الأدمن</span>
+                <span className="text-sm text-green-600 font-medium">Admin Panel</span>
                 <Button variant="outline" size="sm" onClick={handleAdminLogout}>
-                  تسجيل خروج
+                  Logout
                 </Button>
               </div>
             ) : (

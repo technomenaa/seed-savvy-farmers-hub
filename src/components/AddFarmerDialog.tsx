@@ -1,13 +1,13 @@
 
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/hooks/use-toast';
-import { Plus } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
+import { Plus, X } from 'lucide-react';
 
 interface Farmer {
   id: string;
@@ -30,7 +30,7 @@ interface AddFarmerDialogProps {
 }
 
 const AddFarmerDialog = ({ onFarmerAdded }: AddFarmerDialogProps) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     location: '',
@@ -40,52 +40,35 @@ const AddFarmerDialog = ({ onFarmerAdded }: AddFarmerDialogProps) => {
     phone: '',
     email: '',
     crops: '',
-    image: '',
-    verified: true
+    verified: false
   });
-  const { toast } = useToast();
 
   const locations = [
-    'Amman', 'Irbid', 'Zarqa', 'Ajloun', 'Jerash', 'Mafraq',
-    'Balqa', 'Madaba', 'Karak', 'Tafilah', 'Ma\'an', 'Aqaba'
+    'عمان', 'إربد', 'الزرقاء', 'عجلون', 'جرش', 'المفرق',
+    'البلقاء', 'مادبا', 'الكرك', 'الطفيلة', 'معان', 'العقبة'
   ];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.name || !formData.location || !formData.phone) {
-      toast({
-        title: "خطأ",
-        description: "يرجى ملء جميع الحقول المطلوبة",
-        variant: "destructive"
-      });
-      return;
-    }
-
     const newFarmer: Farmer = {
       id: Date.now().toString(),
       name: formData.name,
       location: formData.location,
-      specialties: formData.specialties.split(',').map(s => s.trim()).filter(s => s),
-      experience: formData.experience || '0 years',
-      farmSize: formData.farmSize || '0 hectares',
+      specialties: formData.specialties.split(',').map(s => s.trim()),
+      experience: formData.experience,
+      farmSize: formData.farmSize,
       contact: {
         phone: formData.phone,
-        email: formData.email || ''
+        email: formData.email
       },
-      crops: formData.crops.split(',').map(c => c.trim()).filter(c => c),
-      image: formData.image || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop',
+      crops: formData.crops.split(',').map(c => c.trim()),
+      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop',
       verified: formData.verified
     };
 
     onFarmerAdded(newFarmer);
-    
-    toast({
-      title: "تم بنجاح",
-      description: "تم إضافة المزارع بنجاح",
-    });
-    
-    setIsOpen(false);
+    setOpen(false);
     setFormData({
       name: '',
       location: '',
@@ -95,45 +78,43 @@ const AddFarmerDialog = ({ onFarmerAdded }: AddFarmerDialogProps) => {
       phone: '',
       email: '',
       crops: '',
-      image: '',
-      verified: true
+      verified: false
     });
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="flex items-center gap-2">
-          <Plus className="h-4 w-4" />
+        <Button className="mb-4">
+          <Plus className="h-4 w-4 mr-2" />
           إضافة مزارع
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>إضافة مزارع جديد</DialogTitle>
           <DialogDescription>
-            أدخل معلومات المزارع الجديد
+            أضف معلومات المزارع الجديد إلى القاعدة
           </DialogDescription>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="name">الاسم *</Label>
+              <Label htmlFor="name">الاسم</Label>
               <Input
                 id="name"
                 value={formData.name}
                 onChange={(e) => setFormData({...formData, name: e.target.value})}
-                placeholder="اسم المزارع"
                 required
               />
             </div>
             
             <div>
-              <Label htmlFor="location">الموقع *</Label>
+              <Label htmlFor="location">الموقع</Label>
               <Select value={formData.location} onValueChange={(value) => setFormData({...formData, location: value})}>
                 <SelectTrigger>
-                  <SelectValue placeholder="اختر المحافظة" />
+                  <SelectValue placeholder="اختر الموقع" />
                 </SelectTrigger>
                 <SelectContent>
                   {locations.map(location => (
@@ -144,14 +125,38 @@ const AddFarmerDialog = ({ onFarmerAdded }: AddFarmerDialogProps) => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="phone">رقم الهاتف *</Label>
+              <Label htmlFor="experience">سنوات الخبرة</Label>
+              <Input
+                id="experience"
+                value={formData.experience}
+                onChange={(e) => setFormData({...formData, experience: e.target.value})}
+                placeholder="مثال: 15 سنة"
+                required
+              />
+            </div>
+            
+            <div>
+              <Label htmlFor="farmSize">حجم المزرعة</Label>
+              <Input
+                id="farmSize"
+                value={formData.farmSize}
+                onChange={(e) => setFormData({...formData, farmSize: e.target.value})}
+                placeholder="مثال: 25 هكتار"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="phone">رقم الهاتف</Label>
               <Input
                 id="phone"
                 value={formData.phone}
                 onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                placeholder="+962 79 123 4567"
+                placeholder="+962 xx xxx xxxx"
                 required
               />
             </div>
@@ -163,29 +168,7 @@ const AddFarmerDialog = ({ onFarmerAdded }: AddFarmerDialogProps) => {
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({...formData, email: e.target.value})}
-                placeholder="email@example.com"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="experience">سنوات الخبرة</Label>
-              <Input
-                id="experience"
-                value={formData.experience}
-                onChange={(e) => setFormData({...formData, experience: e.target.value})}
-                placeholder="15 years"
-              />
-            </div>
-            
-            <div>
-              <Label htmlFor="farmSize">حجم المزرعة</Label>
-              <Input
-                id="farmSize"
-                value={formData.farmSize}
-                onChange={(e) => setFormData({...formData, farmSize: e.target.value})}
-                placeholder="25 hectares"
+                required
               />
             </div>
           </div>
@@ -196,7 +179,8 @@ const AddFarmerDialog = ({ onFarmerAdded }: AddFarmerDialogProps) => {
               id="specialties"
               value={formData.specialties}
               onChange={(e) => setFormData({...formData, specialties: e.target.value})}
-              placeholder="Organic Farming, Seed Production"
+              placeholder="مثال: الزراعة العضوية, إنتاج البذور"
+              required
             />
           </div>
 
@@ -206,26 +190,19 @@ const AddFarmerDialog = ({ onFarmerAdded }: AddFarmerDialogProps) => {
               id="crops"
               value={formData.crops}
               onChange={(e) => setFormData({...formData, crops: e.target.value})}
-              placeholder="Wheat, Barley, Vegetables"
+              placeholder="مثال: القمح, الشعير, الخضروات"
+              required
             />
           </div>
 
-          <div>
-            <Label htmlFor="image">رابط الصورة</Label>
-            <Input
-              id="image"
-              value={formData.image}
-              onChange={(e) => setFormData({...formData, image: e.target.value})}
-              placeholder="https://example.com/image.jpg"
-            />
-          </div>
-          
-          <div className="flex gap-4 pt-4">
-            <Button type="submit" className="flex-1">إضافة المزارع</Button>
-            <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               إلغاء
             </Button>
-          </div>
+            <Button type="submit">
+              إضافة المزارع
+            </Button>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
