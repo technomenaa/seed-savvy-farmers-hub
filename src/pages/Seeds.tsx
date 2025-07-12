@@ -69,7 +69,7 @@ const Seeds = () => {
   ];
 
   useEffect(() => {
-    // Check if admin is logged in from localStorage or context
+    // Check admin login status from localStorage
     const adminStatus = localStorage.getItem('isAdminLoggedIn') === 'true';
     setIsAdminLoggedIn(adminStatus);
 

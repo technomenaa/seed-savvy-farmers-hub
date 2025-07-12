@@ -1,7 +1,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Link, useLocation } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AdminLoginDialog from './AdminLoginDialog';
 
 export const Header = () => {
@@ -10,12 +10,22 @@ export const Header = () => {
   
   const isActive = (path: string) => location.pathname === path;
 
+  useEffect(() => {
+    // Check admin login status from localStorage on component mount
+    const adminStatus = localStorage.getItem('isAdminLoggedIn') === 'true';
+    setIsAdminLoggedIn(adminStatus);
+  }, []);
+
   const handleAdminLogin = () => {
     setIsAdminLoggedIn(true);
+    localStorage.setItem('isAdminLoggedIn', 'true');
   };
 
   const handleAdminLogout = () => {
     setIsAdminLoggedIn(false);
+    localStorage.removeItem('isAdminLoggedIn');
+    // Force page refresh to update all components
+    window.location.reload();
   };
 
   return (

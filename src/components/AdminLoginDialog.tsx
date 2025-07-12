@@ -23,6 +23,9 @@ const AdminLoginDialog = ({ onAdminLogin }: AdminLoginDialogProps) => {
     e.preventDefault();
     
     if (credentials.username === 'admin' && credentials.password === 'admin123') {
+      // Save admin login state to localStorage
+      localStorage.setItem('isAdminLoggedIn', 'true');
+      
       toast({
         title: "Success",
         description: "Welcome to Admin Panel!",
@@ -30,6 +33,9 @@ const AdminLoginDialog = ({ onAdminLogin }: AdminLoginDialogProps) => {
       onAdminLogin();
       setIsOpen(false);
       setCredentials({ username: '', password: '' });
+      
+      // Force page refresh to update all components
+      window.location.reload();
     } else {
       toast({
         title: "Error",

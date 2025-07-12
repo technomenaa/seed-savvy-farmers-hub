@@ -45,7 +45,7 @@ const Farmers = () => {
   ];
 
   useEffect(() => {
-    // Check if admin is logged in
+    // Check admin login status from localStorage
     const adminStatus = localStorage.getItem('isAdminLoggedIn') === 'true';
     setIsAdminLoggedIn(adminStatus);
 

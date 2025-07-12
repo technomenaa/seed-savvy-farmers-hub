@@ -40,6 +40,7 @@ const Experts = () => {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [bookingDate, setBookingDate] = useState('');
   const [bookingTime, setBookingTime] = useState('');
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
   const { toast } = useToast();
 
   const specializations = [
@@ -56,6 +57,10 @@ const Experts = () => {
   ];
 
   useEffect(() => {
+    // Check admin login status from localStorage
+    const adminStatus = localStorage.getItem('isAdminLoggedIn') === 'true';
+    setIsAdminLoggedIn(adminStatus);
+
     const savedExperts = localStorage.getItem('experts');
     if (savedExperts) {
       setExperts(JSON.parse(savedExperts));
@@ -238,7 +243,7 @@ const Experts = () => {
             </SelectContent>
           </Select>
           
-          <ExpertRegistration onExpertAdded={handleExpertAdded} />
+          {isAdminLoggedIn && <ExpertRegistration onExpertAdded={handleExpertAdded} />}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
