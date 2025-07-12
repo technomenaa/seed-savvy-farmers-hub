@@ -46,40 +46,48 @@ export const Header = () => {
               to="/" 
               className={`transition-colors ${isActive('/') ? 'text-green-600 font-medium' : 'text-gray-600 hover:text-green-600'}`}
             >
-              Home
+              الرئيسية
             </Link>
             <Link 
               to="/seeds" 
               className={`transition-colors ${isActive('/seeds') ? 'text-green-600 font-medium' : 'text-gray-600 hover:text-green-600'}`}
             >
-              Seeds
+              البذور
             </Link>
             <Link 
               to="/farmers" 
               className={`transition-colors ${isActive('/farmers') ? 'text-green-600 font-medium' : 'text-gray-600 hover:text-green-600'}`}
             >
-              Farmers
+              المزارعون
             </Link>
             <Link 
               to="/experts" 
               className={`transition-colors ${isActive('/experts') ? 'text-green-600 font-medium' : 'text-gray-600 hover:text-green-600'}`}
             >
-              Experts
+              الخبراء
             </Link>
             <Link 
               to="/search" 
               className={`transition-colors ${isActive('/search') ? 'text-green-600 font-medium' : 'text-gray-600 hover:text-green-600'}`}
             >
-              Search
+              البحث
             </Link>
+            {isAdminLoggedIn && (
+              <Link 
+                to="/dashboard" 
+                className={`transition-colors ${isActive('/dashboard') ? 'text-green-600 font-medium' : 'text-gray-600 hover:text-green-600'}`}
+              >
+                لوحة التحكم
+              </Link>
+            )}
           </nav>
 
           <div className="flex items-center space-x-4">
             {isAdminLoggedIn ? (
               <div className="flex items-center space-x-2">
-                <span className="text-sm text-green-600 font-medium">Admin Panel</span>
+                <span className="text-sm text-green-600 font-medium">لوحة الأدمن</span>
                 <Button variant="outline" size="sm" onClick={handleAdminLogout}>
-                  Sign Out
+                  تسجيل خروج
                 </Button>
               </div>
             ) : (

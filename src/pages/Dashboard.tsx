@@ -5,33 +5,76 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
-import { User, Database, TrendingUp, Calendar, MapPin, Activity } from 'lucide-react';
+import { 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableHead, 
+  TableHeader, 
+  TableRow 
+} from '@/components/ui/table';
+import { User, Database, TrendingUp, Calendar, MapPin, Activity, Users, Leaf, UserCheck } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 interface Farmer {
   id: string;
   name: string;
-  region: string;
-  specialization: string;
-  registrationDate: string;
+  location: string;
+  specialties: string[];
+  experience: string;
+  farmSize: string;
+  contact: {
+    phone: string;
+    email: string;
+  };
+  crops: string[];
+  verified: boolean;
 }
 
 interface Seed {
   id: string;
   name: string;
-  type: string;
+  category: string;
   availability: string;
-  addedDate: string;
-  region: string;
+  price: string;
+  location: string;
+  description: string;
+}
+
+interface Expert {
+  id: string;
+  name: string;
+  specialization: string;
+  experience: string;
+  contact: {
+    phone: string;
+    email: string;
+  };
+  location: string;
+  verified: boolean;
 }
 
 const Dashboard = () => {
   const [farmers, setFarmers] = useState<Farmer[]>([]);
   const [seeds, setSeeds] = useState<Seed[]>([]);
+  const [experts, setExperts] = useState<Expert[]>([]);
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
 
   useEffect(() => {
+    // Check admin login status
+    const adminStatus = localStorage.getItem('isAdminLoggedIn') === 'true';
+    setIsAdminLoggedIn(adminStatus);
+
+    // If not admin, redirect to home
+    if (!adminStatus) {
+      window.location.href = '/';
+      return;
+    }
+
+    // Load data from localStorage
     const savedFarmers = localStorage.getItem('farmers');
     const savedSeeds = localStorage.getItem('seeds');
+    const savedExperts = localStorage.getItem('experts');
     
     if (savedFarmers) {
       setFarmers(JSON.parse(savedFarmers));
@@ -40,42 +83,49 @@ const Dashboard = () => {
     if (savedSeeds) {
       setSeeds(JSON.parse(savedSeeds));
     }
+    
+    if (savedExperts) {
+      setExperts(JSON.parse(savedExperts));
+    }
   }, []);
 
   // Analytics calculations
   const totalFarmers = farmers.length;
   const totalSeeds = seeds.length;
-  const availableSeeds = seeds.filter(s => s.availability === 'In Stock').length;
-  const limitedSeeds = seeds.filter(s => s.availability === 'Limited').length;
+  const totalExperts = experts.length;
+  const verifiedFarmers = farmers.filter(f => f.verified).length;
+  const verifiedExperts = experts.filter(e => e.verified).length;
+  const availableSeeds = seeds.filter(s => s.availability === 'متوفر').length;
   
-  const regionData = [...new Set([...farmers.map(f => f.region), ...seeds.map(s => s.region)].filter(Boolean))]
-    .map(region => ({
-      region,
-      farmers: farmers.filter(f => f.region === region).length,
-      seeds: seeds.filter(s => s.region === region).length
+  const locationData = [...new Set([
+    ...farmers.map(f => f.location), 
+    ...seeds.map(s => s.location),
+    ...experts.map(e => e.location)
+  ].filter(Boolean))]
+    .map(location => ({
+      location,
+      farmers: farmers.filter(f => f.location === location).length,
+      seeds: seeds.filter(s => s.location === location).length,
+      experts: experts.filter(e => e.location === location).length
     }));
 
-  const seedTypeData = [...new Set(seeds.map(s => s.type).filter(Boolean))]
-    .map(type => ({
-      type,
-      count: seeds.filter(s => s.type === type).length
+  const seedCategoryData = [...new Set(seeds.map(s => s.category).filter(Boolean))]
+    .map(category => ({
+      category,
+      count: seeds.filter(s => s.category === category).length
     }));
 
   const availabilityData = [
-    { name: 'In Stock', value: availableSeeds, color: '#22c55e' },
-    { name: 'Limited', value: limitedSeeds, color: '#f59e0b' },
-    { name: 'Out of Stock', value: seeds.filter(s => s.availability === 'Out of Stock').length, color: '#ef4444' }
+    { name: 'متوفر', value: availableSeeds, color: '#22c55e' },
+    { name: 'محدود', value: seeds.filter(s => s.availability === 'محدود').length, color: '#f59e0b' },
+    { name: 'غير متوفر', value: seeds.filter(s => s.availability === 'غير متوفر').length, color: '#ef4444' }
   ];
 
-  const recentFarmers = farmers
-    .sort((a, b) => new Date(b.registrationDate).getTime() - new Date(a.registrationDate).getTime())
-    .slice(0, 5);
-
-  const recentSeeds = seeds
-    .sort((a, b) => new Date(b.addedDate).getTime() - new Date(a.addedDate).getTime())
-    .slice(0, 5);
-
   const stockPercentage = totalSeeds > 0 ? (availableSeeds / totalSeeds) * 100 : 0;
+
+  if (!isAdminLoggedIn) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -83,8 +133,8 @@ const Dashboard = () => {
       
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Management Dashboard</h1>
-          <p className="text-gray-600">Comprehensive overview of farmers, seeds, and platform analytics</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">لوحة تحكم الأدمن</h1>
+          <p className="text-gray-600">نظرة شاملة على المزارعين والبذور والخبراء والإحصائيات</p>
         </div>
 
         {/* Key Statistics */}
@@ -92,11 +142,11 @@ const Dashboard = () => {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center">
-                <User className="h-8 w-8 text-blue-600" />
+                <Users className="h-8 w-8 text-blue-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Total Farmers</p>
+                  <p className="text-sm font-medium text-gray-600">إجمالي المزارعين</p>
                   <p className="text-2xl font-bold">{totalFarmers}</p>
-                  <p className="text-xs text-gray-500">Registered users</p>
+                  <p className="text-xs text-gray-500">موثق: {verifiedFarmers}</p>
                 </div>
               </div>
             </CardContent>
@@ -105,11 +155,24 @@ const Dashboard = () => {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center">
-                <Database className="h-8 w-8 text-green-600" />
+                <Leaf className="h-8 w-8 text-green-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Total Seeds</p>
+                  <p className="text-sm font-medium text-gray-600">إجمالي البذور</p>
                   <p className="text-2xl font-bold">{totalSeeds}</p>
-                  <p className="text-xs text-gray-500">Seed varieties</p>
+                  <p className="text-xs text-gray-500">أنواع البذور</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center">
+                <UserCheck className="h-8 w-8 text-purple-600" />
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-600">إجمالي الخبراء</p>
+                  <p className="text-2xl font-bold">{totalExperts}</p>
+                  <p className="text-xs text-gray-500">موثق: {verifiedExperts}</p>
                 </div>
               </div>
             </CardContent>
@@ -120,22 +183,9 @@ const Dashboard = () => {
               <div className="flex items-center">
                 <TrendingUp className="h-8 w-8 text-emerald-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Available Stock</p>
+                  <p className="text-sm font-medium text-gray-600">البذور المتوفرة</p>
                   <p className="text-2xl font-bold">{availableSeeds}</p>
-                  <p className="text-xs text-gray-500">{stockPercentage.toFixed(1)}% in stock</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <MapPin className="h-8 w-8 text-purple-600" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Active Regions</p>
-                  <p className="text-2xl font-bold">{regionData.length}</p>
-                  <p className="text-xs text-gray-500">Geographic coverage</p>
+                  <p className="text-xs text-gray-500">{stockPercentage.toFixed(1)}% متوفر</p>
                 </div>
               </div>
             </CardContent>
@@ -147,15 +197,15 @@ const Dashboard = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Activity className="h-5 w-5" />
-              Stock Status Overview
+              حالة المخزون
             </CardTitle>
-            <CardDescription>Current seed availability across all varieties</CardDescription>
+            <CardDescription>توفر البذور الحالي عبر جميع الأنواع</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div>
                 <div className="flex justify-between text-sm mb-2">
-                  <span>Available Stock ({availableSeeds} seeds)</span>
+                  <span>المخزون المتوفر ({availableSeeds} نوع)</span>
                   <span>{stockPercentage.toFixed(1)}%</span>
                 </div>
                 <Progress value={stockPercentage} className="h-2" />
@@ -163,39 +213,42 @@ const Dashboard = () => {
               <div className="grid grid-cols-3 gap-4 text-center">
                 <div className="p-4 bg-green-50 rounded-lg">
                   <p className="text-2xl font-bold text-green-600">{availableSeeds}</p>
-                  <p className="text-sm text-green-700">In Stock</p>
+                  <p className="text-sm text-green-700">متوفر</p>
                 </div>
                 <div className="p-4 bg-yellow-50 rounded-lg">
-                  <p className="text-2xl font-bold text-yellow-600">{limitedSeeds}</p>
-                  <p className="text-sm text-yellow-700">Limited</p>
+                  <p className="text-2xl font-bold text-yellow-600">
+                    {seeds.filter(s => s.availability === 'محدود').length}
+                  </p>
+                  <p className="text-sm text-yellow-700">محدود</p>
                 </div>
                 <div className="p-4 bg-red-50 rounded-lg">
                   <p className="text-2xl font-bold text-red-600">
-                    {seeds.filter(s => s.availability === 'Out of Stock').length}
+                    {seeds.filter(s => s.availability === 'غير متوفر').length}
                   </p>
-                  <p className="text-sm text-red-700">Out of Stock</p>
+                  <p className="text-sm text-red-700">غير متوفر</p>
                 </div>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Charts and Analytics */}
+        {/* Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           <Card>
             <CardHeader>
-              <CardTitle>Regional Distribution</CardTitle>
-              <CardDescription>Farmers and seeds by region</CardDescription>
+              <CardTitle>التوزيع الجغرافي</CardTitle>
+              <CardDescription>المزارعين والبذور والخبراء حسب المحافظة</CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={regionData}>
+                <BarChart data={locationData}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="region" />
+                  <XAxis dataKey="location" />
                   <YAxis />
                   <Tooltip />
-                  <Bar dataKey="farmers" fill="#3b82f6" name="Farmers" />
-                  <Bar dataKey="seeds" fill="#10b981" name="Seeds" />
+                  <Bar dataKey="farmers" fill="#3b82f6" name="مزارعون" />
+                  <Bar dataKey="seeds" fill="#10b981" name="بذور" />
+                  <Bar dataKey="experts" fill="#8b5cf6" name="خبراء" />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
@@ -203,8 +256,8 @@ const Dashboard = () => {
 
           <Card>
             <CardHeader>
-              <CardTitle>Seed Availability</CardTitle>
-              <CardDescription>Current stock status breakdown</CardDescription>
+              <CardTitle>توفر البذور</CardTitle>
+              <CardDescription>تفصيل حالة المخزون الحالية</CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
@@ -240,49 +293,50 @@ const Dashboard = () => {
           </Card>
         </div>
 
-        {/* Recent Activity Tabs */}
+        {/* Data Tables */}
         <Tabs defaultValue="farmers" className="space-y-4">
           <TabsList>
-            <TabsTrigger value="farmers">Recent Farmers</TabsTrigger>
-            <TabsTrigger value="seeds">Recent Seeds</TabsTrigger>
-            <TabsTrigger value="types">Seed Categories</TabsTrigger>
+            <TabsTrigger value="farmers">المزارعون</TabsTrigger>
+            <TabsTrigger value="seeds">البذور</TabsTrigger>
+            <TabsTrigger value="experts">الخبراء</TabsTrigger>
           </TabsList>
 
           <TabsContent value="farmers">
             <Card>
               <CardHeader>
-                <CardTitle>Recently Registered Farmers</CardTitle>
-                <CardDescription>Latest farmers who joined the platform</CardDescription>
+                <CardTitle>قائمة المزارعين</CardTitle>
+                <CardDescription>جميع المزارعين المسجلين في المنصة</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {recentFarmers.length === 0 ? (
-                    <p className="text-gray-500 text-center py-8">No farmers registered yet</p>
-                  ) : (
-                    recentFarmers.map((farmer) => (
-                      <div key={farmer.id} className="flex items-center justify-between p-4 border rounded-lg">
-                        <div className="flex items-center space-x-4">
-                          <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-semibold">
-                            {farmer.name.split(' ').map(n => n[0]).join('')}
-                          </div>
-                          <div>
-                            <p className="font-medium">{farmer.name}</p>
-                            <div className="flex items-center text-sm text-gray-500">
-                              <MapPin className="h-4 w-4 mr-1" />
-                              {farmer.region}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <Badge variant="secondary">{farmer.specialization.split(',')[0]?.trim()}</Badge>
-                          <p className="text-xs text-gray-500 mt-1">
-                            {new Date(farmer.registrationDate).toLocaleDateString()}
-                          </p>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>الاسم</TableHead>
+                      <TableHead>الموقع</TableHead>
+                      <TableHead>التخصص</TableHead>
+                      <TableHead>الخبرة</TableHead>
+                      <TableHead>الحالة</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {farmers.map((farmer) => (
+                      <TableRow key={farmer.id}>
+                        <TableCell className="font-medium">{farmer.name}</TableCell>
+                        <TableCell>{farmer.location}</TableCell>
+                        <TableCell>{farmer.specialties[0] || 'غير محدد'}</TableCell>
+                        <TableCell>{farmer.experience}</TableCell>
+                        <TableCell>
+                          <Badge variant={farmer.verified ? "default" : "secondary"}>
+                            {farmer.verified ? 'موثق' : 'غير موثق'}
+                          </Badge>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+                {farmers.length === 0 && (
+                  <p className="text-center text-gray-500 py-8">لا يوجد مزارعون مسجلون</p>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -290,69 +344,84 @@ const Dashboard = () => {
           <TabsContent value="seeds">
             <Card>
               <CardHeader>
-                <CardTitle>Recently Added Seeds</CardTitle>
-                <CardDescription>Latest seed varieties added to the database</CardDescription>
+                <CardTitle>قائمة البذور</CardTitle>
+                <CardDescription>جميع أنواع البذور المتاحة</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {recentSeeds.length === 0 ? (
-                    <p className="text-gray-500 text-center py-8">No seeds added yet</p>
-                  ) : (
-                    recentSeeds.map((seed) => (
-                      <div key={seed.id} className="flex items-center justify-between p-4 border rounded-lg">
-                        <div className="flex items-center space-x-4">
-                          <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                            <Database className="h-5 w-5 text-green-600" />
-                          </div>
-                          <div>
-                            <p className="font-medium">{seed.name}</p>
-                            <p className="text-sm text-gray-500">{seed.type}</p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <Badge
-                            className={
-                              seed.availability === 'In Stock'
-                                ? 'bg-green-100 text-green-800'
-                                : seed.availability === 'Limited'
-                                ? 'bg-yellow-100 text-yellow-800'
-                                : 'bg-red-100 text-red-800'
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>النوع</TableHead>
+                      <TableHead>الفئة</TableHead>
+                      <TableHead>السعر</TableHead>
+                      <TableHead>الموقع</TableHead>
+                      <TableHead>التوفر</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {seeds.map((seed) => (
+                      <TableRow key={seed.id}>
+                        <TableCell className="font-medium">{seed.name}</TableCell>
+                        <TableCell>{seed.category}</TableCell>
+                        <TableCell>{seed.price}</TableCell>
+                        <TableCell>{seed.location}</TableCell>
+                        <TableCell>
+                          <Badge 
+                            variant={
+                              seed.availability === 'متوفر' ? 'default' :
+                              seed.availability === 'محدود' ? 'secondary' : 'destructive'
                             }
                           >
                             {seed.availability}
                           </Badge>
-                          <p className="text-xs text-gray-500 mt-1">
-                            {new Date(seed.addedDate).toLocaleDateString()}
-                          </p>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+                {seeds.length === 0 && (
+                  <p className="text-center text-gray-500 py-8">لا توجد بذور مضافة</p>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
 
-          <TabsContent value="types">
+          <TabsContent value="experts">
             <Card>
               <CardHeader>
-                <CardTitle>Seed Categories</CardTitle>
-                <CardDescription>Distribution of seeds by type</CardDescription>
+                <CardTitle>قائمة الخبراء</CardTitle>
+                <CardDescription>جميع الخبراء المسجلين في المنصة</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {seedTypeData.map((type) => (
-                    <div key={type.type} className="p-4 border rounded-lg text-center">
-                      <p className="text-2xl font-bold text-primary">{type.count}</p>
-                      <p className="text-sm font-medium">{type.type}</p>
-                    </div>
-                  ))}
-                  {seedTypeData.length === 0 && (
-                    <div className="col-span-full text-center py-8 text-gray-500">
-                      No seed categories available
-                    </div>
-                  )}
-                </div>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>الاسم</TableHead>
+                      <TableHead>التخصص</TableHead>
+                      <TableHead>الخبرة</TableHead>
+                      <TableHead>الموقع</TableHead>
+                      <TableHead>الحالة</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {experts.map((expert) => (
+                      <TableRow key={expert.id}>
+                        <TableCell className="font-medium">{expert.name}</TableCell>
+                        <TableCell>{expert.specialization}</TableCell>
+                        <TableCell>{expert.experience}</TableCell>
+                        <TableCell>{expert.location}</TableCell>
+                        <TableCell>
+                          <Badge variant={expert.verified ? "default" : "secondary"}>
+                            {expert.verified ? 'موثق' : 'غير موثق'}
+                          </Badge>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+                {experts.length === 0 && (
+                  <p className="text-center text-gray-500 py-8">لا يوجد خبراء مسجلون</p>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
