@@ -94,7 +94,7 @@ const Dashboard = () => {
   const totalExperts = experts.length;
   const verifiedFarmers = farmers.filter(f => f.verified).length;
   const verifiedExperts = experts.filter(e => e.verified).length;
-  const availableSeeds = seeds.filter(s => s.availability === 'متوفر').length;
+  const availableSeeds = seeds.filter(s => s.availability === 'Available' || s.availability === 'In Stock').length;
   
   const locationData = [...new Set([
     ...farmers.map(f => f.location), 
@@ -115,9 +115,9 @@ const Dashboard = () => {
     }));
 
   const availabilityData = [
-    { name: 'متوفر', value: availableSeeds, color: '#22c55e' },
-    { name: 'محدود', value: seeds.filter(s => s.availability === 'محدود').length, color: '#f59e0b' },
-    { name: 'غير متوفر', value: seeds.filter(s => s.availability === 'غير متوفر').length, color: '#ef4444' }
+    { name: 'Available', value: availableSeeds, color: '#22c55e' },
+    { name: 'Limited', value: seeds.filter(s => s.availability === 'Limited').length, color: '#f59e0b' },
+    { name: 'Out of Stock', value: seeds.filter(s => s.availability === 'Out of Stock').length, color: '#ef4444' }
   ];
 
   const stockPercentage = totalSeeds > 0 ? (availableSeeds / totalSeeds) * 100 : 0;
@@ -216,13 +216,13 @@ const Dashboard = () => {
                 </div>
                 <div className="p-4 bg-yellow-50 rounded-lg">
                   <p className="text-2xl font-bold text-yellow-600">
-                    {seeds.filter(s => s.availability === 'محدود').length}
+                    {seeds.filter(s => s.availability === 'Limited').length}
                   </p>
                   <p className="text-sm text-yellow-700">Limited</p>
                 </div>
                 <div className="p-4 bg-red-50 rounded-lg">
                   <p className="text-2xl font-bold text-red-600">
-                    {seeds.filter(s => s.availability === 'غير متوفر').length}
+                    {seeds.filter(s => s.availability === 'Out of Stock').length}
                   </p>
                   <p className="text-sm text-red-700">Unavailable</p>
                 </div>
@@ -365,12 +365,12 @@ const Dashboard = () => {
                         <TableCell>{seed.price}</TableCell>
                         <TableCell>{seed.location}</TableCell>
                         <TableCell>
-                          <Badge 
-                            variant={
-                              seed.availability === 'متوفر' ? 'default' :
-                              seed.availability === 'محدود' ? 'secondary' : 'destructive'
-                            }
-                          >
+                           <Badge 
+                             variant={
+                               seed.availability === 'Available' || seed.availability === 'In Stock' ? 'default' :
+                               seed.availability === 'Limited' ? 'secondary' : 'destructive'
+                             }
+                           >
                             {seed.availability}
                           </Badge>
                         </TableCell>
