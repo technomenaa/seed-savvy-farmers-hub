@@ -33,9 +33,8 @@ export const Header = () => {
   const handleAdminLogout = () => {
     setIsAdminLoggedIn(false);
     localStorage.removeItem('isAdminLoggedIn');
-    // Clear admin-specific cache and navigate to home
-    localStorage.removeItem('adminDashboardCache');
-    window.location.href = '/?logout=true';
+    // Force immediate UI update
+    window.dispatchEvent(new Event('storage'));
   };
 
   return (

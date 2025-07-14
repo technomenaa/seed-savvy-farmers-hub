@@ -34,11 +34,10 @@ const AdminLoginDialog = ({ onAdminLogin }: AdminLoginDialogProps) => {
       setIsOpen(false);
       setCredentials({ username: '', password: '' });
       
-      // Force page refresh to update all components
-      window.location.reload();
+      // No need to refresh, just trigger the callback
     } else {
       toast({
-        title: "Error",
+        title: "Error", 
         description: "Invalid credentials. Use username: admin, password: admin123",
         variant: "destructive"
       });

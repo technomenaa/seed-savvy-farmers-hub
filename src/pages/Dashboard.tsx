@@ -64,15 +64,14 @@ const Dashboard = () => {
     const adminStatus = localStorage.getItem('isAdminLoggedIn') === 'true';
     setIsAdminLoggedIn(adminStatus);
 
-    // If not admin, redirect to home
+    // If not admin, redirect to home immediately
     if (!adminStatus) {
-      window.location.href = '/';
       return;
     }
 
-    // Load data from localStorage
+    // Load data from localStorage only if admin is logged in
     const savedFarmers = localStorage.getItem('farmers');
-    const savedSeeds = localStorage.getItem('seeds');
+    const savedSeeds = localStorage.getItem('seeds'); 
     const savedExperts = localStorage.getItem('experts');
     
     if (savedFarmers) {
