@@ -14,6 +14,15 @@ export const Header = () => {
     // Check admin login status from localStorage on component mount
     const adminStatus = localStorage.getItem('isAdminLoggedIn') === 'true';
     setIsAdminLoggedIn(adminStatus);
+    
+    // Listen for storage changes to update state
+    const handleStorageChange = () => {
+      const newAdminStatus = localStorage.getItem('isAdminLoggedIn') === 'true';
+      setIsAdminLoggedIn(newAdminStatus);
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
   const handleAdminLogin = () => {
@@ -24,8 +33,9 @@ export const Header = () => {
   const handleAdminLogout = () => {
     setIsAdminLoggedIn(false);
     localStorage.removeItem('isAdminLoggedIn');
-    // Force page refresh to update all components
-    window.location.reload();
+    // Clear admin-specific cache and navigate to home
+    localStorage.removeItem('adminDashboardCache');
+    window.location.href = '/?logout=true';
   };
 
   return (
